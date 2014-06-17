@@ -75,6 +75,12 @@ project(':sdk').projectDir = new File(rootDir.getParentFile(), "sdk")
 include ':sdk:find-java'
 project(':sdk:find-java').projectDir = new File(rootDir.getParentFile(), "sdk/find_java")
 
+include ':sdk:avdlauncher'
+project(':sdk:avdlauncher').projectDir = new File(rootDir.getParentFile(), "sdk/avdlauncher")
+
+include ':sdk:sdklauncher'
+project(':sdk:sdklauncher').projectDir = new File(rootDir.getParentFile(), "sdk/sdklauncher")
+
 
 include ':emulator'
 project(':emulator').projectDir = new File(rootDir.getParentFile(), "external/qemu")
