@@ -40,10 +40,13 @@ fi
 
 cd "$PROG_DIR"
 
+# first build Eclipse/Monitor
+( set -x ; OUT_DIR="$OUT_DIR" DIST_DIR="$DIST_DIR" BUILD_NUMBER="$BNUM" ../../gradlew -b ../../build.gradle --no-daemon publishLocal )
+( set -x ; OUT_DIR="$OUT_DIR" DIST_DIR="$DIST_DIR" BUILD_NUMBER="$BNUM" ../../gradlew -b ../../../sdk/eclipse/build.gradle --no-daemon copydeps buildEclipse )
+
 # temp disable --parallel builds
 #OUT_DIR="$OUT_DIR" DIST_DIR="$DIST_DIR" ../../gradlew -b ../../build.gradle --parallel-threads="${NUM_THREADS:-47}" --no-daemon makeSdk
 ( set -x ; OUT_DIR="$OUT_DIR" DIST_DIR="$DIST_DIR" BUILD_NUMBER="$BNUM" ../../gradlew -b ../../build.gradle --no-daemon $TARGET )
-
 
 # Generate repository XML metadata for release script
 
