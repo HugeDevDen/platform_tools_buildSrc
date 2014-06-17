@@ -119,6 +119,10 @@ class CopyToolItemsTask extends DefaultTask {
         }
         Files.copy(fromFile, toFile)
 
+        if (fromFile.canExecute()) {
+            toFile.setExecutable(true)
+        }
+
         return toFile
     }
 
