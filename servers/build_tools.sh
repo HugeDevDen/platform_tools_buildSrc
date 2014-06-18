@@ -33,6 +33,13 @@ if [[ -z "$OUT_DIR"  ]]; then die "## Error: Missing out folder"; fi
 if [[ -z "$DIST_DIR" ]]; then die "## Error: Missing destination folder"; fi
 if [[ -z "$BNUM"     ]]; then die "## Error: Missing build number"; fi
 
+if [[ "$OUT_DIR" != /* ]]
+then
+    pushd "$PROG_DIR"/../../..
+    OUT_DIR="$PWD/$OUT_DIR"
+    popd
+fi
+
 TARGET="makeSdk"
 if [[ $CURRENT_OS == "linux" ]]; then
     TARGET="$TARGET makeWinSdk"
