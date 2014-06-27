@@ -95,3 +95,6 @@ project(':mksdcard').projectDir = new File(rootDir.getParentFile(), "sdk/emulato
 
 include ':external:fat32lib'
 
+include ':external:emma'
+project(':external:emma').projectDir = new File(rootDir.getParentFile(), "external/emma")
+
