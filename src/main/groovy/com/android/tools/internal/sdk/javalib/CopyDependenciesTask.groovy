@@ -65,10 +65,14 @@ class CopyDependenciesTask extends BaseTask {
             sb.append("${artifact.moduleVersion.id.toString()} > ")
 
             try {
-                // check it's not an android artifact or a local artifact
-                if (isAndroidArtifact(artifact.moduleVersion.id)) {
+                ModuleVersionIdentifier id = artifact.moduleVersion.id
+                // Make sure it's not:
+                // - Android artifact (unless it's an external one since we do want to package those)
+                // - A local artifact (ie a sub-project, those are copied on their own)
+                // - A invalid artifact (non jar packaging)
+                if (isAndroidArtifact(id) && !isAndroidExternalArtifact(id)) {
                     sb.append("SKIPPED (android)")
-                } else if (isLocalArtifact(artifact.moduleVersion.id)) {
+                } else if (isLocalArtifact(id)) {
                     sb.append("SKIPPED (local)")
                 } else if (!isValidArtifactType(artifact)) {
                     sb.append("SKIPPED (type = ${artifact.type})")
@@ -80,8 +84,6 @@ class CopyDependenciesTask extends BaseTask {
                     Files.copy(artifact.file, dest)
 
                     // copy the license file
-                    ModuleVersionIdentifier id = artifact.moduleVersion.id
-
                     File fromFile = new File(repoDir,
                             id.group.replace('.', '/') +
                                     '/' + id.name + '/' + id.version + '/NOTICE')
