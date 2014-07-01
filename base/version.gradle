@@ -1,2 +1,2 @@
-project.ext.baseVersion = '23.0.1'
-project.ext.buildVersion = '0.12.1'
+project.ext.baseVersion = '23.0.2'
+project.ext.buildVersion = '0.12.2'
