@@ -23,25 +23,14 @@ import org.gradle.api.UnknownTaskException
 
 class CloneArtifactsPlugin implements Plugin<Project> {
 
-    final static String GRADLE_SNAPSHOT_REPO = 'http://repo.gradle.org/gradle/libs-snapshots-local';
-    final static String GRADLE_RELEASES_REPO = "http://repo.gradle.org/gradle/libs-releases-local";
+    final static String GRADLE_SNAPSHOT_REPO = 'https://repo.gradle.org/gradle/libs-snapshots-local';
+    final static String GRADLE_RELEASES_REPO = "https://repo.gradle.org/gradle/libs-releases-local";
 
     @Override
     void apply(Project project) {
         // put some tasks on the project.
         Task cloneArtifacts = project.tasks.create("cloneArtifacts")
         cloneArtifacts.setDescription("Clone dependencies")
-
-        Task setupTask = project.tasks.create("setupMaven")
-        setupTask << {
-            project.repositories {
-                mavenCentral()
-                maven { url GRADLE_SNAPSHOT_REPO }
-                maven { url GRADLE_RELEASES_REPO }
-            }
-        }
-
-        cloneArtifacts.dependsOn setupTask
 
         // if this is the top project.
         if (project.rootProject == project) {
@@ -52,7 +41,6 @@ class CloneArtifactsPlugin implements Plugin<Project> {
             downloadArtifactsTask.project = project
             downloadArtifactsTask.conventionMapping.repository =  { project.file(extension.repository) }
 
-            downloadArtifactsTask.dependsOn setupTask
             cloneArtifacts.dependsOn downloadArtifactsTask
 
             project.afterEvaluate {

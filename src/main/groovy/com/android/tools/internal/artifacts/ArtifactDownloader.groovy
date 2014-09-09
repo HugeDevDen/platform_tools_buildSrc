@@ -35,7 +35,7 @@ import org.gradle.api.artifacts.result.UnresolvedDependencyResult
 
 class ArtifactDownloader {
 
-    private static final String URL_MAVEN_CENTRAL = "http://repo1.maven.org/maven2"
+    private static final String URL_MAVEN_CENTRAL = "https://repo1.maven.org/maven2"
 
     private static final String MAVEN_METADATA_XML = "maven-metadata.xml"
     private static final String DOT_MD5 = ".md5"
