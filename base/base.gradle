@@ -1,5 +1,11 @@
 apply plugin: 'findbugs'
 
+// since 2.1 findbugs is 3.0.0 by default which does not work on Java 6
+findbugs {
+    toolVersion = '2.0.3'
+}
+
+
 // find bug dependencies is added dynamically so it's hard for the
 // clone artifact plugin to find it. This custom config lets us manually
 // add such dependencies.
