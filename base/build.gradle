@@ -91,6 +91,105 @@ task setupGradleInIde << {
    command.execute()
 }
 
+def offlineRepo = new File('build/intermediaries/repo')
+
+task prepareOfflineRepo << {
+  offlineRepo.mkdirs()
+}
+
+/**
+ * Identify all project and subprojects output artifacts and copy .jar and .pom
+ * files into the repoDir local maven repository
+ */
+task copySubProjectsArtifacts(dependsOn: 'prepareOfflineRepo') << {
+
+    // top project is the root of all the gradle plugin dependencies
+    def topProject = findProject(':base:gradle')
+    // select the (unique) subprojects only and the top project
+    def projectsToConsider = topProject.configurations.runtime.incoming.resolutionResult.allDependencies.findResults {
+        (it.selected.id instanceof ProjectComponentIdentifier)?findProject(it.selected.id.projectPath):null
+    }
+    projectsToConsider.unique().add(topProject)
+
+    // for each projects, check its output artifact and copy it only with the associated pom file to our
+    // local maven repo.
+    projectsToConsider.each { someProject ->
+      someProject.configurations.runtime.artifacts.files.each { file ->
+        String relativePath = "${someProject.group.replace('.' as char, File.separatorChar)}${File.separatorChar}${someProject.name}${File.separatorChar}${someProject.version}"     
+        File outDir = new File(offlineRepo, relativePath)
+        File sourceDir = new File(new File('../out/repo'), relativePath)
+        outDir.mkdirs()
+        copy {
+          from new File(sourceDir, file.name)
+          into outDir
+        }
+        copy {
+          from new File(sourceDir, file.name.replace(".jar", ".pom"))
+          into outDir
+        }
+      }
+    }
+}
+
+/**
+ * Identify all transitive dependencies from the passed project and copy each jar file into
+ * a maven style repository located at outDir.
+ */
+task copyProjectDependencies(dependsOn: 'prepareOfflineRepo') << {
+    def conf = findProject(':base:gradle').configurations.runtime
+    def depFiles = conf.incoming.files
+    // select transitive dependencies, from this configuration and all referenced subprojects.
+    def componentIds = conf.incoming.resolutionResult.allDependencies.findAll {
+        it.selected.id instanceof ModuleComponentIdentifier
+    }
+    // remove duplicates.
+    componentIds = componentIds.unique { dep1, dep2 ->
+      dep1.selected.id.displayName <=> dep2.selected.id.displayName
+    }
+
+    // for each unique dependecy, find the jar file from the cache and copy it into our .m2 repo
+    componentIds.each { dep ->
+      // find the cached file.
+      def jarFileName = "${dep.selected.id.module}-${dep.selected.id.version}.jar"
+      def cachedFile = depFiles.find { file ->
+          file.name == jarFileName
+      }
+      if (cachedFile != null) {
+          File f = new File(offlineRepo,
+            "${dep.selected.id.group.replace('.' as char, File.separatorChar)}${File.separatorChar}${dep.selected.id.module}${File.separatorChar}${dep.selected.id.version}")
+          f.mkdirs()
+          copy {
+              from cachedFile.path
+              into f
+          }
+      }
+    }
+}
+
+task makeOfflineRepo(dependsOn: 'publishLocal') {
+  outputs.dir offlineRepo
+}
+copyProjectDependencies.mustRunAfter 'publishLocal'
+makeOfflineRepo.dependsOn copyProjectDependencies
+copySubProjectsArtifacts.mustRunAfter 'publishLocal'
+makeOfflineRepo.dependsOn copySubProjectsArtifacts
+
+/**
+ * Zip the maven style repository into a zip file.
+ */
+task zipOfflineRepo(type: Zip, dependsOn: 'makeOfflineRepo') {
+  inputs.files makeOfflineRepo.outputs.files
+  File outputFile = new File('build', 'offline_repo.zip')
+  outputs.file outputFile
+  from makeOfflineRepo.outputs.files
+  archiveName outputFile.name
+  destinationDir outputFile.parentFile
+}
+
+task clean << {
+  delete 'build'
+}
+
 // The hierarchy viewer tests require loading SWT jar files.
 // That fails with the error saying "can't load 32 bit library on 64 bit JVM
 // Disable these tests from running until that is fixed
