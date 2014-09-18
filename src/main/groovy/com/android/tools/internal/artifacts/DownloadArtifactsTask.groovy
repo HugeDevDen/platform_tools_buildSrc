@@ -26,6 +26,9 @@ class DownloadArtifactsTask extends BaseTask {
 
     @TaskAction
     public void downloadArtifacts() {
+        if (System.getenv("USE_EXTERNAL_REPO") == null) {
+          throw new RuntimeException("Set USE_EXTERNAL_REPO=true to add external repositories")
+        }
         new ArtifactDownloader(getProject(), getRepository()).downloadArtifacts()
     }
 }

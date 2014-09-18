@@ -8,6 +8,17 @@ if (!jvmVersion.startsWith('1.6')) {
 }
 
 // artifact cloning destinations
+
+if (System.env.USE_EXTERNAL_REPO != null) {
+  allprojects {
+    repositories {
+        mavenCentral()
+        maven { url 'https://repo.gradle.org/gradle/libs-snapshots-local' }
+        maven { url 'https://repo.gradle.org/gradle/libs-releases-local' }
+    }
+  }
+}
+
 cloneArtifacts {
     repository = "$rootDir/../prebuilts/tools/common/m2/repository"
 }
