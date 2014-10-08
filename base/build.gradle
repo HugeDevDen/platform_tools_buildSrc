@@ -186,6 +186,10 @@ task zipOfflineRepo(type: Zip, dependsOn: 'makeOfflineRepo') {
   destinationDir outputFile.parentFile
 }
 
+// basic task for custom distribution of project should the build server.
+task dist << {
+}
+
 task clean << {
   delete 'build'
 }
