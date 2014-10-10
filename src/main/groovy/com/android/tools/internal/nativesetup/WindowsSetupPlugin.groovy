@@ -17,7 +17,6 @@
 package com.android.tools.internal.nativesetup
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.nativebinaries.platform.Platform
 import org.gradle.nativebinaries.toolchain.Gcc
 /**
  */
@@ -40,18 +39,18 @@ class WindowsSetupPlugin implements Plugin<Project> {
 
                     target("windows") {
                         cppCompiler.executable =  'x86_64-w64-mingw32-g++'
-                        cppCompiler.withArguments {
-                            '-DUSE_MINGW -D__STDC_FORMAT_MACROS -D__STDC_CONSTANT_MACROS -D__USE_MINGW_ANSI_STDIO -m32'
+                        cppCompiler.withArguments { args ->
+                            args.addAll '-DUSE_MINGW', '-D__STDC_FORMAT_MACROS', '-D__STDC_CONSTANT_MACROS', '-D__USE_MINGW_ANSI_STDIO', '-m32'
                         }
 
                         cCompiler.executable = 'x86_64-w64-mingw32-gcc'
-                        cCompiler.withArguments {
-                            '-DUSE_MINGW -D__STDC_FORMAT_MACROS -D__STDC_CONSTANT_MACROS -D__USE_MINGW_ANSI_STDIO -m32'
+                        cCompiler.withArguments { args ->
+                            args.addAll '-DUSE_MINGW', '-D__STDC_FORMAT_MACROS', '-D__STDC_CONSTANT_MACROS', '-D__USE_MINGW_ANSI_STDIO', '-m32'
                         }
 
                         linker.executable = 'x86_64-w64-mingw32-g++'
-                        linker.withArguments {
-                            '-m32'
+                        linker.withArguments { args ->
+                            args << '-m32'
                         }
                         assembler.executable = 'x86_64-w64-mingw32-as'
                         staticLibArchiver.executable = 'x86_64-w64-mingw32-ar'
