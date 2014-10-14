@@ -42,7 +42,7 @@ then
     popd
 fi
 
-TARGET="makeSdk"
+TARGET="dist makeSdk"
 if [[ $CURRENT_OS == "linux" ]]; then
     TARGET="$TARGET makeWinSdk"
 fi
