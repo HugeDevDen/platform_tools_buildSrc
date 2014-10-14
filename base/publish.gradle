@@ -66,3 +66,12 @@ signing {
     required { project.has("release") && gradle.taskGraph.hasTask("uploadArchives") }
     sign configurations.archives
 }
+
+task uploadlLocal(type: Upload) {
+    configuration = configurations.archives
+    repositories {
+        mavenDeployer {
+            repository(url: uri("$rootProject.ext.localRepo"))
+        }
+    }
+}
