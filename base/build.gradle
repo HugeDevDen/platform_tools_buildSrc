@@ -79,16 +79,20 @@ task copyGradleProperty(type: Copy) {
 
 tasks.create(name: 'publishLocal')
 subprojects { project ->
-   if (project.tasks.findByName('publishLocal') != null) {
-       rootProject.publishLocal.dependsOn project.publishLocal
-   }
+    if (project.tasks.findByName('publishLocal') != null) {
+        rootProject.publishLocal.dependsOn project.publishLocal
+    }
 }
 
 task setupGradleInIde << {
-   File dir = gradle.gradleHomeDir
-   String link = dir.path.substring(project.ext.androidHostOut.path.length() + 1)
-   String command = "ln -s $link ${new File(project.ext.androidHostOut, "gradle-dist-link").path}"
-   command.execute()
+    File dir = gradle.gradleHomeDir
+    File gradleDistLink = new File(project.ext.androidHostOut, "gradle-dist-link")
+    if (gradleDistLink.exists()) {
+        gradleDistLink.delete()
+    }
+    String link = dir.path.substring(project.ext.androidHostOut.path.length() + 1)
+    String command = "ln -s $link ${gradleDistLink.path}"
+    command.execute()
 }
 
 def offlineRepo = new File('build/intermediaries/repo')
