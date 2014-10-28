@@ -45,8 +45,8 @@ class BuildEmulator extends DefaultTask {
     void build() {
 
         String command = windows ?
-                "$project.projectDir/android-rebuild.sh --mingw --out-dir=$output" :
-                "$project.projectDir/android-rebuild.sh --out-dir=$output"
+                "$project.projectDir/android-rebuild.sh --verbose --mingw --out-dir=$output" :
+                "$project.projectDir/android-rebuild.sh --verbose --out-dir=$output"
 
         StringBuilder stdout = new StringBuilder()
         StringBuilder stderr = new StringBuilder()
