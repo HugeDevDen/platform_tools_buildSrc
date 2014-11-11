@@ -17,7 +17,7 @@
 package com.android.tools.internal.nativesetup
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.nativebinaries.toolchain.Gcc
+import org.gradle.nativeplatform.toolchain.Gcc
 /**
  */
 class WindowsSetupPlugin implements Plugin<Project> {
