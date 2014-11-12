@@ -42,11 +42,11 @@ public class CopyProjectDependencyTask extends DefaultTask {
 
         componentIds.each { dep ->
             ModuleComponentIdentifier componentId = dep.selected.id
-            makeOfflineCopyFor(componentId.group, componentId.module, componentId.version, repoDir)
+            makeOfflineCopyFor(componentId.group, componentId.module, componentId.version, repoDir, true)
         }
     }
 
-    protected void makeOfflineCopyFor(String group, String module, String version, File repoDir) {
+    protected void makeOfflineCopyFor(String group, String module, String version, File repoDir, boolean copyNotice) {
         def artifactPath = "${group.replace('.' as char, File.separatorChar)}${File.separatorChar}${module}${File.separatorChar}${version}"
 
         def artifactFolder = new File(repoDir, artifactPath)
@@ -77,7 +77,16 @@ public class CopyProjectDependencyTask extends DefaultTask {
         def pomHandler = new PomHandler(srcFile)
         def parentPomId = pomHandler.parentPom
         if (parentPomId != null) {
-            makeOfflineCopyFor(parentPomId.group, parentPomId.name, parentPomId.version, repoDir)
+            makeOfflineCopyFor(parentPomId.group, parentPomId.name, parentPomId.version, repoDir, false)
+        }
+
+        if (copyNotice) {
+            srcFile = new File(artifactFolder, 'NOTICE')
+            if (srcFile.isFile()) {
+                Files.copy(srcFile, new File(destinationFolder, srcFile.getName()))
+            } else {
+                throw new RuntimeException("Missing NOTICE file for: " + artifactPath)
+            }
         }
     }
 }
