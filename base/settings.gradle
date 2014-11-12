@@ -27,6 +27,7 @@ include ':base:builder-test-api'
 include ':base:builder'
 include ':base:gradle-model'
 include ':base:gradle'
+include ':base:integration-test'
 include ':base:project-test-lib'
 include ':base:project-test'
 
@@ -50,6 +51,7 @@ project(':base:builder'         ).projectDir = new File(rootDir, 'base/build-sys
 project(':base:manifest-merger' ).projectDir = new File(rootDir, 'base/build-system/manifest-merger')
 project(':base:gradle-model'    ).projectDir = new File(rootDir, 'base/build-system/gradle-model')
 project(':base:gradle'          ).projectDir = new File(rootDir, 'base/build-system/gradle')
+project(':base:integration-test').projectDir = new File(rootDir, 'base/build-system/integration-test')
 project(':base:project-test-lib').projectDir = new File(rootDir, 'base/build-system/project-test-lib')
 project(':base:project-test'    ).projectDir = new File(rootDir, 'base/build-system/project-test')
 
