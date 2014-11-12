@@ -39,7 +39,7 @@ import java.io.IOException;
  * - parent POM
  * - packaging
  */
-class PomHandler {
+public class PomHandler {
 
     private final File pomFile;
     private Document document = null;
@@ -83,7 +83,7 @@ class PomHandler {
         }
     }
 
-    PomHandler(File pomFile) {
+    public PomHandler(File pomFile) {
         this.pomFile = pomFile;
     }
 
@@ -137,7 +137,7 @@ class PomHandler {
         return new FakeModuleVersionIdentifier(group, name, version);
     }
 
-    ModuleVersionIdentifier getParentPom() throws IOException {
+    public ModuleVersionIdentifier getParentPom() throws IOException {
         Document document = getDocument();
         Node rootNode = document.getDocumentElement();
 
