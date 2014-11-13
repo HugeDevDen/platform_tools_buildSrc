@@ -62,6 +62,13 @@ subprojects.each { subproject -> evaluationDependsOn(subproject.path) }
 
 def testTasks = subprojects.collect { it.tasks.withType(Test) }.flatten()
 
+// Print failed tests to the console early.
+testTasks.each { task ->
+    task.testLogging {
+        events "failed", "skipped"
+    }
+}
+
 task aggregateResults(type: Copy) {
     from { testTasks*.binResultsDir*.parentFile*.parentFile }
     into { file("$buildDir/results") }
