@@ -27,7 +27,11 @@ class WindowsSetupPlugin implements Plugin<Project> {
 
         project.model {
             platforms {
-                windows {
+                windows32 {
+                    architecture "i386"
+                    operatingSystem "windows"
+                }
+                windows64 {
                     architecture "i386"
                     operatingSystem "windows"
                 }
@@ -37,7 +41,7 @@ class WindowsSetupPlugin implements Plugin<Project> {
                 mingw(Gcc) {
                     path "$project.rootDir/../prebuilts/gcc/linux-x86/host/x86_64-w64-mingw32-4.8/bin"
 
-                    target("windows") {
+                    target("windows32") {
                         cppCompiler.executable =  'x86_64-w64-mingw32-g++'
                         cppCompiler.withArguments { args ->
                             args.addAll '-DUSE_MINGW', '-D__STDC_FORMAT_MACROS', '-D__STDC_CONSTANT_MACROS', '-D__USE_MINGW_ANSI_STDIO', '-m32'
@@ -51,6 +55,23 @@ class WindowsSetupPlugin implements Plugin<Project> {
                         linker.executable = 'x86_64-w64-mingw32-g++'
                         linker.withArguments { args ->
                             args << '-m32'
+                        }
+                        assembler.executable = 'x86_64-w64-mingw32-as'
+                        staticLibArchiver.executable = 'x86_64-w64-mingw32-ar'
+                    }
+                    target("windows64") {
+                        cppCompiler.executable =  'x86_64-w64-mingw32-g++'
+                        cppCompiler.withArguments { args ->
+                            args.addAll '-DUSE_MINGW', '-D__STDC_FORMAT_MACROS', '-D__STDC_CONSTANT_MACROS', '-D__USE_MINGW_ANSI_STDIO'
+                        }
+
+                        cCompiler.executable = 'x86_64-w64-mingw32-gcc'
+                        cCompiler.withArguments { args ->
+                            args.addAll '-DUSE_MINGW', '-D__STDC_FORMAT_MACROS', '-D__STDC_CONSTANT_MACROS', '-D__USE_MINGW_ANSI_STDIO'
+                        }
+
+                        linker.executable = 'x86_64-w64-mingw32-g++'
+                        linker.withArguments { args ->
                         }
                         assembler.executable = 'x86_64-w64-mingw32-as'
                         staticLibArchiver.executable = 'x86_64-w64-mingw32-ar'
