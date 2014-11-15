@@ -21,19 +21,19 @@ import org.gradle.api.tasks.InputDirectory
 import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.TaskAction
-import BuildableDOMCategory
+import org.gradle.build.docs.BuildableDOMCategory
 import org.gradle.build.docs.DocGenerationException
-import XIncludeAwareXmlProvider
+import org.gradle.build.docs.XIncludeAwareXmlProvider
+import org.gradle.build.docs.dsl.docbook.model.BlockDoc
+import org.gradle.build.docs.dsl.docbook.model.ClassDoc
+import org.gradle.build.docs.dsl.docbook.model.ClassExtensionMetaData
 import org.gradle.build.docs.dsl.links.ClassLinkMetaData
 import org.gradle.build.docs.dsl.links.LinkMetaData
-import ClassExtensionMetaData
 import org.gradle.build.docs.dsl.source.model.ClassMetaData
 import org.gradle.build.docs.model.ClassMetaDataRepository
 import org.gradle.build.docs.model.SimpleClassMetaDataRepository
 import org.w3c.dom.Document
 import org.w3c.dom.Element
-import BlockDoc
-import ClassDoc
 
 /**
  * Generates the docbook source for the DSL reference guide.
