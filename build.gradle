@@ -27,3 +27,15 @@ dependencies {
     testCompile "junit:junit:3.8.1"
 }
 
+// See README.
+sourceSets {
+    main {
+        groovy {
+            srcDir 'src/fromGradle/groovy'
+        }
+
+        resources {
+            srcDir 'src/fromGradle/resources'
+        }
+    }
+}
