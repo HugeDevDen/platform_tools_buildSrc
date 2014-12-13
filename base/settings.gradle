@@ -51,7 +51,6 @@ project(':base:builder-test-api').projectDir = new File(rootDir, 'base/build-sys
 project(':base:builder'         ).projectDir = new File(rootDir, 'base/build-system/builder')
 project(':base:docs'            ).projectDir = new File(rootDir, 'base/build-system/docs')
 project(':base:manifest-merger' ).projectDir = new File(rootDir, 'base/build-system/manifest-merger')
-project(':base:gradle-model'    ).projectDir = new File(rootDir, 'base/build-system/gradle-model')
 project(':base:gradle'          ).projectDir = new File(rootDir, 'base/build-system/gradle')
 project(':base:integration-test').projectDir = new File(rootDir, 'base/build-system/integration-test')
 project(':base:project-test-lib').projectDir = new File(rootDir, 'base/build-system/project-test-lib')
