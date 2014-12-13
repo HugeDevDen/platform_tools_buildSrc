@@ -35,7 +35,7 @@ import org.gradle.api.artifacts.result.UnresolvedDependencyResult
 
 class ArtifactDownloader {
 
-    private static final String URL_MAVEN_CENTRAL = "https://repo1.maven.org/maven2"
+    private static final String URL_MAVEN_CENTRAL = "https://jcenter.bintray.com/"
 
     private static final String MAVEN_METADATA_XML = "maven-metadata.xml"
     private static final String DOT_MD5 = ".md5"
@@ -200,6 +200,10 @@ class ArtifactDownloader {
                     false, true)
         }
 
+        if (pomFile == null) {
+            return;
+        }
+
         // read the pom to figure out parents, relocation and packaging
         if (!handlePom(repoUrls, pomFile, rootDestination, downloadedSet)) {
             // pom said there's no jar to download: abort
@@ -256,20 +260,29 @@ class ArtifactDownloader {
             if (printDownload) {
                 System.out.println("DWNLOAD " + destinationFile.absolutePath)
             }
-            FileUtils.copyURLToFile(fileURL, destinationFile)
+            try {
+                FileUtils.copyURLToFile(fileURL, destinationFile)
+            } catch (FileNotFoundException e) {
+                System.out.println("WARNING, " + fileURL + " not downloaded")
+                return null
+            }
 
-            // get the checksums
-            URL md5URL = new URL(repoUrl + "/" + folder + "/" + name + DOT_MD5)
-            File md5File = new File(destinationFolder, name + DOT_MD5)
-            FileUtils.copyURLToFile(md5URL, md5File)
+            try {
+                // get the checksums
+                URL md5URL = new URL(repoUrl + "/" + folder + "/" + name + DOT_MD5)
+                File md5File = new File(destinationFolder, name + DOT_MD5)
+                FileUtils.copyURLToFile(md5URL, md5File)
 
-            checksum(destinationFile, md5File, Hashing.md5())
+                checksum(destinationFile, md5File, Hashing.md5())
 
-            URL sha15URL = new URL(repoUrl + "/" + folder + "/" + name + DOT_SHA1)
-            File sha1File = new File(destinationFolder, name + DOT_SHA1)
-            FileUtils.copyURLToFile(sha15URL, sha1File)
+                URL sha15URL = new URL(repoUrl + "/" + folder + "/" + name + DOT_SHA1)
+                File sha1File = new File(destinationFolder, name + DOT_SHA1)
+                FileUtils.copyURLToFile(sha15URL, sha1File)
 
-            checksum(destinationFile, sha1File, Hashing.sha1())
+                checksum(destinationFile, sha1File, Hashing.sha1())
+            } catch (java.io.FileNotFoundException e) {
+                // ignore md5 or sha1 missing files.
+            }
         } else if (printDownload) {
             System.out.println("SKIPPED " + destinationFile.absolutePath)
         }
