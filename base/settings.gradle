@@ -1,3 +1,4 @@
+include ':base:annotations'
 include ':base:api-generator'
 include ':base:ant-tasks'
 include ':base:archquery'
@@ -31,7 +32,6 @@ include ':base:gradle'
 include ':base:integration-test'
 include ':base:project-test-lib'
 include ':base:project-test'
-
 
 include ':base:templates'
 
