@@ -18,6 +18,28 @@ task publishLocal(type: Upload) {
     repositories {
         mavenDeployer {
             repository(url: uri("$rootProject.ext.localRepo"))
+            pom.project {
+                url 'http://tools.android.com'
+                inceptionYear '2007'
+
+                licenses {
+                    license {
+                        name 'The Apache Software License, Version 2.0'
+                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                        distribution 'repo'
+                    }
+                }
+
+                scm {
+                    url 'https://android.googlesource.com/platform/tools/base'
+                    connection 'git://android.googlesource.com/platform/tools/base.git'
+                }
+                developers {
+                    developer {
+                        name 'The Android Open Source Project'
+                    }
+                }
+            }
         }
     }
 }
