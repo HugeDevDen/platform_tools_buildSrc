@@ -47,7 +47,7 @@ bintray {
             desc = project.ext.pomDesc + ' version ' + project.version
             gpg {
                 sign = true
-                passphrase = 'studio'
+                passphrase = System.env.GPG_PASSPHRASE
             }
 //            mavenCentralSync {
 //                sync = true
