@@ -50,6 +50,18 @@ uploadArchives {
     }
 }
 
+// configure the publish local task with project specifics.
+publishLocal {
+    repositories {
+        mavenDeployer {
+            pom.project {
+                name project.ext.pomName
+                description project.ext.pomDesc
+                }
+        }
+    }
+}
+
 // custom tasks for creating source/javadoc jars
 task sourcesJar(type: Jar, dependsOn:classes) {
     classifier = 'sources'
