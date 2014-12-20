@@ -112,6 +112,13 @@ task clean << {
   delete 'build'
 }
 
+// Task for initializing a fresh repo.
+task init {
+  dependsOn prepareRepo
+  dependsOn setupGradleInIde
+  dependsOn copyGradleProperty
+}
+
 // The hierarchy viewer tests require loading SWT jar files.
 // That fails with the error saying "can't load 32 bit library on 64 bit JVM
 // Disable these tests from running until that is fixed
