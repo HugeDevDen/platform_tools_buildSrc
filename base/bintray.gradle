@@ -48,7 +48,7 @@ publishing {
 bintray {
     user = System.env.BINTRAY_USER
     key = System.env.BINTRAY_USER_KEY
-    dryRun = System.env.BINTRAY_DRYRUN
+    //dryRun = System.env.BINTRAY_DRYRUN
     publications = [ 'mavenJava' ]
     publish = project.has("release")
     pkg {
