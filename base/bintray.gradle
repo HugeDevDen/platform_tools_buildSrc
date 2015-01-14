@@ -22,6 +22,25 @@ publishing {
             artifact javadocJar {
                 classifier "javadoc"
             }
+
+            pom.withXml {
+                asNode().appendNode('description', project.ext.pomDesc)
+                asNode().appendNode('url', 'http://tools.android.com/')
+                asNode().appendNode('name', project.group + '.' + project.archivesBaseName)
+
+                Node license = asNode().appendNode('licenses').appendNode('license')
+                license.appendNode('name', 'The Apache Software License, Version 2.0')
+                license.appendNode('url', 'http://www.apache.org/licenses/LICENSE-2.0.txt')
+                license.appendNode('distribution', 'repo')
+
+                asNode().appendNode('developers')
+                    .appendNode('developer')
+                        .appendNode('name', 'The Android Open Source Project')
+
+                Node scm = asNode().appendNode('scm')
+                scm.appendNode('connection', 'git://android.googlesource.com/platform/tools/base.git')
+                scm.appendNode('url', 'https://android.googlesource.com/platform/tools/base')
+            }
         }
     }
 }
@@ -29,7 +48,7 @@ publishing {
 bintray {
     user = System.env.BINTRAY_USER
     key = System.env.BINTRAY_USER_KEY
-    //dryRun = true
+    dryRun = System.env.BINTRAY_DRYRUN
     publications = [ 'mavenJava' ]
     publish = project.has("release")
     pkg {
@@ -37,10 +56,6 @@ bintray {
         repo = 'android-tools'
         name = project.group + '.' + project.archivesBaseName
         desc = project.ext.pomDesc
-        websiteUrl = 'http://tools.android.com/'
-        issueTrackerUrl = 'https://code.google.com/p/android/'
-        vcsUrl = 'git://android.googlesource.com/platform/tools/base.git'
-        licenses = [ 'Apache-2.0' ]
         publicDownloadNumbers = true
         version {
             name = project.version
