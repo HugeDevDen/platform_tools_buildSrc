@@ -2,9 +2,23 @@ apply plugin: 'clone-artifacts'
 
 // Currently, the minimum requirement to run Android SDK tools is Java 1.6
 // So make sure that we are compiling with 1.6
-def jvmVersion = System.getProperty('java.version')
-if (!jvmVersion.startsWith('1.6')) {
-    throw new RuntimeException("Tools need to be compiled with Java 1.6, you are using Java $jvmVersion")
+task('checkJavaVersion') << {
+    def jvmVersion = System.getProperty('java.version')
+    if (!jvmVersion.startsWith('1.6')) {
+        throw new RuntimeException("Tools need to be compiled with Java 1.6, you are using Java $jvmVersion")
+    }
+}
+final def checkJavaVersionTask = tasks['checkJavaVersion']
+
+allprojects { subproject ->
+    afterEvaluate {
+        // Only check if we are doing build type tasks. Things like dependency listing
+        // should still work with a "wrong" java version.
+        final def buildTasks = ['build', 'compileJava', 'compileGroovy', 'classes', 'assemble', 'javadoc', 'groovydoc', 'check']
+        // Task.doFirst does not run if the task has no work to do. Need to be more aggressive than that.
+        // Some projects won't have all of these tasks, so need to use findByName.
+        buildTasks.each { subproject.tasks.findByName(it)?.dependsOn(checkJavaVersionTask) }
+    }
 }
 
 // artifact cloning destinations
