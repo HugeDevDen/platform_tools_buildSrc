@@ -128,33 +128,28 @@ public class UserGuideTransformTask extends DefaultTask {
 
             def classMetaData = linkRepository.get(className)
             LinkMetaData linkMetaData = methodName ? classMetaData.getMethod(methodName) : classMetaData.classLink
+
             String style = element.'@style' ?: linkMetaData.style.toString().toLowerCase()
-
-            Element ulinkElement = doc.createElement('ulink')
-
-            String href
+            Element newElement
             if (style == 'dsldoc') {
+                String href
                 href = "$dsldocUrl/${className}.html"
-            } else if (style == "groovydoc" || style == "javadoc") {
-                def base = style == "groovydoc" ? groovydocUrl : javadocUrl
-                def packageName = classMetaData.packageName
-                href = "$base/${packageName.replace('.', '/')}/${className.substring(packageName.length()+1)}.html"
+                if (linkMetaData.urlFragment) {
+                    href = "$href#$linkMetaData.urlFragment"
+                }
+
+                newElement = doc.createElement('ulink')
+                newElement.setAttribute('url', href)
+                Element classNameElement = doc.createElement('classname')
+                newElement.appendChild(classNameElement)
+
+                classNameElement.appendChild(doc.createTextNode(linkMetaData.displayName))
             } else {
-                throw new InvalidUserDataException("Unknown api link style '$style'.")
+                newElement = doc.createElement('classname')
+                newElement.appendChild(doc.createTextNode(linkMetaData.displayName))
             }
 
-            if (linkMetaData.urlFragment) {
-                href = "$href#$linkMetaData.urlFragment"
-            }
-
-            ulinkElement.setAttribute('url', href)
-
-            Element classNameElement = doc.createElement('classname')
-            ulinkElement.appendChild(classNameElement)
-
-            classNameElement.appendChild(doc.createTextNode(linkMetaData.displayName))
-
-            element.parentNode.replaceChild(ulinkElement, element)
+            element.parentNode.replaceChild(newElement, element)
         }
     }
 

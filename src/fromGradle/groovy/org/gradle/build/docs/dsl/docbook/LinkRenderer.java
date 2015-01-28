@@ -80,7 +80,17 @@ public class LinkRenderer {
 
         if (className.startsWith("java.")) {
             Element linkElement = document.createElement("ulink");
-            linkElement.setAttribute("url", String.format("http://download.oracle.com/javase/1.5.0/docs/api/%s.html",
+            linkElement.setAttribute("url", String.format("http://download.oracle.com/javase/7/docs/api/%s.html",
+                    className.replace(".", "/")));
+            Element classNameElement = document.createElement("classname");
+            classNameElement.appendChild(document.createTextNode(StringUtils.substringAfterLast(className, ".")));
+            linkElement.appendChild(classNameElement);
+            return linkElement;
+        }
+
+        if (className.startsWith("org.gradle.")) {
+            Element linkElement = document.createElement("ulink");
+            linkElement.setAttribute("url", String.format("http://gradle.org/docs/current/javadoc/%s.html",
                     className.replace(".", "/")));
             Element classNameElement = document.createElement("classname");
             classNameElement.appendChild(document.createTextNode(StringUtils.substringAfterLast(className, ".")));
