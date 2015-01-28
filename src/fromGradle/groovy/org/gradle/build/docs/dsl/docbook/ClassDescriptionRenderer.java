@@ -32,20 +32,6 @@ public class ClassDescriptionRenderer {
         parent.appendChild(title);
         title.appendChild(document.createTextNode(classDoc.getSimpleName()));
 
-        Element list = document.createElement("segmentedlist");
-        parent.appendChild(list);
-        Element segtitle = document.createElement("segtitle");
-        list.appendChild(segtitle);
-        segtitle.appendChild(document.createTextNode("API Documentation"));
-        Element listItem = document.createElement("seglistitem");
-        list.appendChild(listItem);
-        Element seg = document.createElement("seg");
-        listItem.appendChild(seg);
-        Element apilink = document.createElement("apilink");
-        seg.appendChild(apilink);
-        apilink.setAttribute("class", classDoc.getName());
-        apilink.setAttribute("style", classDoc.getStyle());
-
         warningsRenderer.renderTo(classDoc, "class", parent);
 
         for (Element element : classDoc.getComment()) {
