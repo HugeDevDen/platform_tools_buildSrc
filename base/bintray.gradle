@@ -65,7 +65,7 @@ bintray {
                 passphrase = System.env.GPG_PASSPHRASE
             }
             mavenCentralSync {
-                sync = true
+                sync = false
                 user = System.env.SONATYPE_USERNAME
                 password = System.env.SONATYPE_PASSWORD
                 close = '0' // let's close the  and release the version manually.
