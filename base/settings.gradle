@@ -30,33 +30,35 @@ include ':base:builder'
 include ':base:gradle-model'
 include ':base:gradle-core'
 include ':base:gradle'
+include ':base:gradle-experimental'
 include ':base:integration-test'
 include ':base:project-test-lib'
 include ':base:project-test'
 
 include ':base:templates'
 
-project(':base:api-generator'   ).projectDir = new File(rootDir, 'base/misc/api-generator')
-project(':base:ant-tasks'       ).projectDir = new File(rootDir, 'base/legacy/ant-tasks')
-project(':base:archquery'       ).projectDir = new File(rootDir, 'base/legacy/archquery')
-project(':base:dvlib'           ).projectDir = new File(rootDir, 'base/device_validator/dvlib')
-project(':base:lint'            ).projectDir = new File(rootDir, 'base/lint/cli')
-project(':base:lint-api'        ).projectDir = new File(rootDir, 'base/lint/libs/lint-api')
-project(':base:lint-checks'     ).projectDir = new File(rootDir, 'base/lint/libs/lint-checks')
-project(':base:screenshot2'     ).projectDir = new File(rootDir, 'base/misc/screenshot2')
-project(':base:sdklib-test'     ).projectDir = new File(rootDir, 'base/sdklib')
-project(':base:sdklib-test'     ).buildFileName = 'test.gradle'
+project(':base:api-generator'      ).projectDir = new File(rootDir, 'base/misc/api-generator')
+project(':base:ant-tasks'          ).projectDir = new File(rootDir, 'base/legacy/ant-tasks')
+project(':base:archquery'          ).projectDir = new File(rootDir, 'base/legacy/archquery')
+project(':base:dvlib'              ).projectDir = new File(rootDir, 'base/device_validator/dvlib')
+project(':base:lint'               ).projectDir = new File(rootDir, 'base/lint/cli')
+project(':base:lint-api'           ).projectDir = new File(rootDir, 'base/lint/libs/lint-api')
+project(':base:lint-checks'        ).projectDir = new File(rootDir, 'base/lint/libs/lint-checks')
+project(':base:screenshot2'        ).projectDir = new File(rootDir, 'base/misc/screenshot2')
+project(':base:sdklib-test'        ).projectDir = new File(rootDir, 'base/sdklib')
+project(':base:sdklib-test'        ).buildFileName = 'test.gradle'
 
-project(':base:builder-model'   ).projectDir = new File(rootDir, 'base/build-system/builder-model')
-project(':base:builder-test-api').projectDir = new File(rootDir, 'base/build-system/builder-test-api')
-project(':base:builder'         ).projectDir = new File(rootDir, 'base/build-system/builder')
-project(':base:docs'            ).projectDir = new File(rootDir, 'base/build-system/docs')
-project(':base:manifest-merger' ).projectDir = new File(rootDir, 'base/build-system/manifest-merger')
-project(':base:gradle-core'     ).projectDir = new File(rootDir, 'base/build-system/gradle-core')
-project(':base:gradle'          ).projectDir = new File(rootDir, 'base/build-system/gradle')
-project(':base:integration-test').projectDir = new File(rootDir, 'base/build-system/integration-test')
-project(':base:project-test-lib').projectDir = new File(rootDir, 'base/build-system/project-test-lib')
-project(':base:project-test'    ).projectDir = new File(rootDir, 'base/build-system/project-test')
+project(':base:builder-model'      ).projectDir = new File(rootDir, 'base/build-system/builder-model')
+project(':base:builder-test-api'   ).projectDir = new File(rootDir, 'base/build-system/builder-test-api')
+project(':base:builder'            ).projectDir = new File(rootDir, 'base/build-system/builder')
+project(':base:docs'               ).projectDir = new File(rootDir, 'base/build-system/docs')
+project(':base:manifest-merger'    ).projectDir = new File(rootDir, 'base/build-system/manifest-merger')
+project(':base:gradle-core'        ).projectDir = new File(rootDir, 'base/build-system/gradle-core')
+project(':base:gradle'             ).projectDir = new File(rootDir, 'base/build-system/gradle')
+project(':base:gradle-experimental').projectDir = new File(rootDir, 'base/build-system/gradle-experimental')
+project(':base:integration-test'   ).projectDir = new File(rootDir, 'base/build-system/integration-test')
+project(':base:project-test-lib'   ).projectDir = new File(rootDir, 'base/build-system/project-test-lib')
+project(':base:project-test'       ).projectDir = new File(rootDir, 'base/build-system/project-test')
 
 
 include ':swt:chimpchat'
