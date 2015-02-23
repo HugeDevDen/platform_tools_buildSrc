@@ -125,6 +125,7 @@ apply plugin: 'offline-repo'
 
 task clean << {
   delete 'build'
+  delete "$localRepo/com/android/tools"
 }
 
 // Task for initializing a fresh repo.
