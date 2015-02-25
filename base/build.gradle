@@ -125,7 +125,12 @@ apply plugin: 'offline-repo'
 
 task clean << {
   delete 'build'
-  delete "$localRepo/com/android/tools"
+
+  new File("$localRepo/com/android/tools").eachFile {
+    if (it.name != "external") {
+      delete it
+    }
+  }
 }
 
 // Task for initializing a fresh repo.
