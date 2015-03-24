@@ -50,12 +50,7 @@ bintray {
     key = System.env.BINTRAY_USER_KEY
     //dryRun = System.env.BINTRAY_DRYRUN
 
-    // FIXME: bintray plugin is broken by gradle-2.4-20150116230020+0000.
-    // The plugin depends on the publishMavenJavaPublicationToMavenLocal task.
-    // The new gradle delayed the creation of the tasks, so bintray is unable to
-    // find it.
-    // Uncomment this when it is fixed.
-    //publications = [ 'mavenJava' ]
+    publications = [ 'mavenJava' ]
 
     publish = project.has("release")
     pkg {
