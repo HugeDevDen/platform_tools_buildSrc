@@ -23,6 +23,7 @@ import com.google.common.hash.HashCode
 import com.google.common.hash.HashFunction
 import com.google.common.hash.Hashing
 import com.google.common.io.Files
+import groovy.transform.CompileStatic
 import org.apache.commons.io.FileUtils
 import org.gradle.api.Project
 import org.gradle.api.UnknownDomainObjectException
@@ -205,13 +206,14 @@ class ArtifactDownloader {
         }
 
         // read the pom to figure out parents, relocation and packaging
-        if (!handlePom(repoUrls, pomFile, rootDestination, downloadedSet)) {
+        String packaging = handlePom(repoUrls, pomFile, rootDestination, downloadedSet)
+        if (packaging == null) {
             // pom said there's no jar to download: abort
             return
         }
 
         // download the jar artifact
-        downloadFile(result.repoUrl, folder, baseName + DOT_JAR, rootDestination, false, false)
+        downloadFile(result.repoUrl, folder, baseName + "." + packaging, rootDestination, false, false)
 
         // download the source if available
         try {
@@ -280,7 +282,7 @@ class ArtifactDownloader {
                 FileUtils.copyURLToFile(sha15URL, sha1File)
 
                 checksum(destinationFile, sha1File, Hashing.sha1())
-            } catch (java.io.FileNotFoundException e) {
+            } catch (FileNotFoundException e) {
                 // ignore md5 or sha1 missing files.
             }
         } else if (printDownload) {
@@ -296,9 +298,9 @@ class ArtifactDownloader {
      * @param pomFile the pom file
      * @param rootDestination where the download happens, in case parent pom must be downloaded.
      *
-     * @return true if jar packaging must be downloaded
+     * @return a non null packaging type if a package must be downloaded
      */
-    private boolean handlePom(String[] repoUrls, File pomFile, File rootDestination,
+    private String handlePom(String[] repoUrls, File pomFile, File rootDestination,
                               Set<ModuleVersionIdentifier> downloadedSet) {
         PomHandler pomHandler = new PomHandler(pomFile)
 
@@ -316,11 +318,23 @@ class ArtifactDownloader {
         String packaging = pomHandler.getPackaging()
 
         // default packaging is jar so missing data is ok.
-        return packaging == null || "jar".equals(packaging) || "bundle".equals(packaging)
+        if (packaging == null || "bundle".equals(packaging)) {
+            return "jar"
+        }
+
+        if ("jar".equals(packaging)  || "aar".equals(packaging)) {
+            return packaging
+        }
+
+        return null
     }
 
     private void checksum(File file, File checksumFile, HashFunction hashFunction)
             throws IOException {
+        if (checksumFile.length() == 0) {
+            project.logger.warn(String.format("No checksum data in: %s", checksumFile))
+            return;
+        }
         // get the checksum value
         List<String> lines = Files.readLines(checksumFile, Charsets.UTF_8)
         if (lines.isEmpty()) {
