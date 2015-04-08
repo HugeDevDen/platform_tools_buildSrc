@@ -15,6 +15,7 @@ include ':base:layoutlib-api'
 include ':base:lint'
 include ':base:lint-api'
 include ':base:lint-checks'
+include ':base:lint-tests'
 include ':base:manifest-merger'
 include ':base:ninepatch'
 include ':base:rule-api'
@@ -45,6 +46,7 @@ project(':base:dvlib'              ).projectDir = new File(rootDir, 'base/device
 project(':base:lint'               ).projectDir = new File(rootDir, 'base/lint/cli')
 project(':base:lint-api'           ).projectDir = new File(rootDir, 'base/lint/libs/lint-api')
 project(':base:lint-checks'        ).projectDir = new File(rootDir, 'base/lint/libs/lint-checks')
+project(':base:lint-tests'         ).projectDir = new File(rootDir, 'base/lint/libs/lint-tests')
 project(':base:screenshot2'        ).projectDir = new File(rootDir, 'base/misc/screenshot2')
 project(':base:sdklib-test'        ).projectDir = new File(rootDir, 'base/sdklib')
 project(':base:sdklib-test'        ).buildFileName = 'test.gradle'
