@@ -138,6 +138,7 @@ task init {
   dependsOn prepareRepo
   dependsOn setupGradleInIde
   dependsOn copyGradleProperty
+  dependsOn tasks.findByPath(':base:builder:generateVersionConstantsJava')
 }
 
 // The hierarchy viewer tests require loading SWT jar files.
