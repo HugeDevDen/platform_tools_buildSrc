@@ -33,6 +33,7 @@ class OfflineRepoPlugin implements Plugin<Project> {
 
         Task prepareOfflineRepo = project.tasks.create('prepareOfflineRepo')
         prepareOfflineRepo.doFirst {
+            project.ext.offlineRepo.delete()
             project.ext.offlineRepo.mkdirs()
         }
 
