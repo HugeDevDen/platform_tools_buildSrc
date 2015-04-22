@@ -26,6 +26,7 @@ include ':base:sdklib-test'
 include ':base:testutils'
 include ':base:gradle-import'
 
+include ':base:profile'
 include ':base:builder-model'
 include ':base:builder-test-api'
 include ':base:builder'
@@ -51,6 +52,7 @@ project(':base:screenshot2'        ).projectDir = new File(rootDir, 'base/misc/s
 project(':base:sdklib-test'        ).projectDir = new File(rootDir, 'base/sdklib')
 project(':base:sdklib-test'        ).buildFileName = 'test.gradle'
 
+project(':base:profile'            ).projectDir = new File(rootDir, 'base/build-system/profile')
 project(':base:builder-model'      ).projectDir = new File(rootDir, 'base/build-system/builder-model')
 project(':base:builder-test-api'   ).projectDir = new File(rootDir, 'base/build-system/builder-test-api')
 project(':base:builder'            ).projectDir = new File(rootDir, 'base/build-system/builder')
