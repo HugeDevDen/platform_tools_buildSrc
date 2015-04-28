@@ -1,5 +1,5 @@
-project.ext.baseVersion = '24.2.1'
-project.ext.buildVersion = '1.2.1'
+project.ext.baseVersion = '24.2.2'
+project.ext.buildVersion = '1.2.2'
 
 // This counter should be incremented every time the api is changed in not backward-compatible way,
 // i.e. it should be incremented from N to N+1 only when the api is changed in a way that existing
