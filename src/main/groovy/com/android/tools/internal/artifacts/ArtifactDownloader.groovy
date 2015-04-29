@@ -28,6 +28,7 @@ import org.apache.commons.io.FileUtils
 import org.gradle.api.Project
 import org.gradle.api.UnknownDomainObjectException
 import org.gradle.api.artifacts.ModuleVersionIdentifier
+import org.gradle.api.artifacts.component.ComponentIdentifier
 import org.gradle.api.artifacts.result.DependencyResult
 import org.gradle.api.artifacts.result.ResolutionResult
 import org.gradle.api.artifacts.result.ResolvedComponentResult
@@ -145,6 +146,17 @@ class ArtifactDownloader {
 
     protected void buildArtifactList(ResolvedComponentResult module,
                                      Set<ModuleVersionIdentifier> list) {
+        buildRecursivelyArtifactList(module, list, new HashSet<ComponentIdentifier>())
+    }
+
+    private void buildRecursivelyArtifactList(ResolvedComponentResult module,
+                                     Set<ModuleVersionIdentifier> list,
+                                     Set<ComponentIdentifier> parsedArtifacts) {
+
+        if (parsedArtifacts.contains(module.getId())) {
+            return
+        }
+        parsedArtifacts.add(module.getId())
         list.add(module.moduleVersion)
 
         for (DependencyResult d : module.getDependencies()) {
@@ -155,7 +167,8 @@ class ArtifactDownloader {
 //                        attempted.getGroup(), attempted.getName(), attempted.getVersion())
 //                list.add(id)
             } else {
-                buildArtifactList(((ResolvedDependencyResult) d).getSelected(), list)
+                buildRecursivelyArtifactList(
+                    ((ResolvedDependencyResult) d).getSelected(), list, parsedArtifacts)
             }
         }
     }
