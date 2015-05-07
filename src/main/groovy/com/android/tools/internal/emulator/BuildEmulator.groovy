@@ -46,8 +46,6 @@ class BuildEmulator extends DefaultTask {
 
         String qemu2_command = "$project.projectDir/android/scripts/build-qemu-android.sh --verbose --target=arm64,mips64,x86_64 " + (windows? "--host=windows-x86,windows-x86_64" : "")
 
-        String mesa_command = "$project.projectDir/android/scripts/build-mesa.sh --verbose " + (windows? " --host=windows-x86,windows-x86_64" : "")
-
         String command = windows ?
                 "$project.projectDir/android-rebuild.sh --verbose --mingw --out-dir=$output" :
                 "$project.projectDir/android-rebuild.sh --verbose --out-dir=$output"
@@ -58,10 +56,6 @@ class BuildEmulator extends DefaultTask {
         Process qemu2_p = qemu2_command.execute()
         qemu2_p.consumeProcessOutput(stdout, stderr)
         int qemu2_result = qemu2_p.waitFor()
-
-        Process mesa_p = mesa_command.execute()
-        mesa_p.consumeProcessOutput(stdout, stderr)
-        int mesa_result = mesa_p.waitFor()
 
         Process p = command.execute()
         p.consumeProcessOutput(stdout, stderr)
