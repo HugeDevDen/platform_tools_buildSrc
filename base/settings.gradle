@@ -37,6 +37,7 @@ include ':base:gradle-experimental'
 include ':base:integration-test'
 include ':base:project-test-lib'
 include ':base:project-test'
+include ':base:google-services'
 
 include ':base:templates'
 
@@ -64,6 +65,7 @@ project(':base:gradle-experimental').projectDir = new File(rootDir, 'base/build-
 project(':base:integration-test'   ).projectDir = new File(rootDir, 'base/build-system/integration-test')
 project(':base:project-test-lib'   ).projectDir = new File(rootDir, 'base/build-system/project-test-lib')
 project(':base:project-test'       ).projectDir = new File(rootDir, 'base/build-system/project-test')
+project(':base:google-services'    ).projectDir = new File(rootDir, 'base/build-system/google-services')
 
 
 include ':swt:chimpchat'
