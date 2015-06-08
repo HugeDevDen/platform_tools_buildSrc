@@ -7,7 +7,12 @@ buildscript {
     }
 }
 
-apply plugin: 'com.jfrog.bintray'
+// apply the plugin with its class name rather than its Id to work around gradle limitation of
+// not being able to find the plugin by Id despite the dependencies being added right above. Gradle
+// is currently not capable of loading plugins by Id if the dependency is anywhere else than
+// in the main project build.gradle. This file is "imported" into the project's build.gradle
+// through a "apply from:".
+apply plugin: com.jfrog.bintray.gradle.BintrayPlugin
 apply plugin: 'maven-publish'
 
 publishing {
