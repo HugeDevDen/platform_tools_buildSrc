@@ -31,9 +31,8 @@ public class ElementWarningsRenderer {
             para.appendChild(document.createTextNode(String.format("Note: This %s is ", type)));
             Element link = document.createElement("ulink");
             para.appendChild(link);
-            link.setAttribute("url", "../userguide/feature_lifecycle.html");
             link.appendChild(document.createTextNode("deprecated"));
-            para.appendChild(document.createTextNode(" and will be removed in the next major version of Gradle."));
+            para.appendChild(document.createTextNode(" and will be removed in a future version of the plugin."));
         }
         if (elementDoc.isIncubating()) {
             Document document = parent.getOwnerDocument();
@@ -44,9 +43,8 @@ public class ElementWarningsRenderer {
             para.appendChild(document.createTextNode(String.format("Note: This %s is ", type)));
             Element link = document.createElement("ulink");
             para.appendChild(link);
-            link.setAttribute("url", "../userguide/feature_lifecycle.html");
             link.appendChild(document.createTextNode("incubating"));
-            para.appendChild(document.createTextNode(" and may change in a future version of Gradle."));
+            para.appendChild(document.createTextNode(" and may change in a future version of the plugin."));
         }
     }
 }
