@@ -32,6 +32,9 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Class able to parse a POM file, and provide some information from it:
@@ -83,8 +86,49 @@ public class PomHandler {
         }
     }
 
+    public static class License {
+        private final String name;
+        private final String url;
+        private final String comments;
+
+        public License(String name, String url, String comments) {
+            this.name = name;
+            this.url = url;
+            this.comments = comments;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public String getUrl() {
+            return url;
+        }
+
+        public String getComments() {
+            return comments;
+        }
+    }
+
     public PomHandler(File pomFile) {
         this.pomFile = pomFile;
+    }
+
+    public ModuleVersionIdentifier getArtifactName() throws IOException {
+        Document document = getDocument();
+        Node rootNode = document.getDocumentElement();
+
+        ModuleVersionIdentifier version = readArtifactAddress(rootNode);
+        if (version.getGroup() == null || version.getVersion() == null) {
+            ModuleVersionIdentifier parentVersion = getParentPom();
+
+            return new FakeModuleVersionIdentifier(
+                    version.getGroup() != null ? version.getGroup() : parentVersion.getGroup(),
+                    version.getName(),
+                    version.getVersion() != null ? version.getVersion() : parentVersion.getVersion());
+        }
+
+        return version;
     }
 
     ModuleVersionIdentifier getRelocation() throws IOException {
@@ -163,7 +207,6 @@ public class PomHandler {
 
     public String getPackaging() throws IOException {
         Document document = getDocument();
-
         Node rootNode = document.getDocumentElement();
 
         Node node = findNode(rootNode, "packaging");
@@ -172,6 +215,44 @@ public class PomHandler {
         }
 
         return getTextNode(node);
+    }
+
+    public List<License> getLicenses() throws IOException {
+        Document document = getDocument();
+        Node rootNode = document.getDocumentElement();
+
+        Node licensesNode = findNode(rootNode, "licenses");
+        if (licensesNode == null) {
+            return Collections.emptyList();
+        }
+
+        NodeList licenseNodes = licensesNode.getChildNodes();
+
+        List<License> list = new ArrayList<License>();
+
+        for (int i = 0, n = licenseNodes.getLength(); i < n; i++) {
+            Node licenseNode = licenseNodes.item(i);
+
+            if (licenseNode.getNodeType() != Node.ELEMENT_NODE) {
+                continue;
+            }
+
+            if ("license".equals(licenseNode.getLocalName())) {
+                final Node name = findNode(licenseNode, "name");
+                final Node url = findNode(licenseNode, "url");
+                final Node comments = findNode(licenseNode, "comments");
+
+                String nameValue = name != null ? getTextNode(name) : null;
+                String urlValue = url != null ? getTextNode(url) : null;
+                String commentsValue = comments != null ? getTextNode(comments) : null;
+
+                if (nameValue != null) {
+                    list.add(new License(nameValue, urlValue, commentsValue));
+                }
+            }
+        }
+
+        return list;
     }
 
     private Document getDocument() throws IOException {
