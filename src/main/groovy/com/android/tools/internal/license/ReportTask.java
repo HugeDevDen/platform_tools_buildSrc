@@ -29,9 +29,11 @@ import org.gradle.api.artifacts.component.ProjectComponentIdentifier;
 import org.gradle.api.artifacts.result.DependencyResult;
 import org.gradle.api.artifacts.result.ResolvedComponentResult;
 import org.gradle.api.artifacts.result.ResolvedDependencyResult;
+import org.gradle.api.tasks.OutputFile;
 import org.gradle.api.tasks.TaskAction;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
 
@@ -44,6 +46,13 @@ import java.util.*;
  * This will NOT work with local jars.
  */
 public class ReportTask extends DefaultTask {
+
+    @OutputFile
+    public File getOutputFile() {
+        return new File(
+                (File) getProject().getRootProject().getExtensions().getExtraProperties().get("androidHostDist"),
+                "license-" + getProject().getName() + ".txt");
+    }
 
     @TaskAction
     public void report() throws IOException {
@@ -67,41 +76,68 @@ public class ReportTask extends DefaultTask {
             }
         }
 
+        Map<String, List<License>> map = new HashMap<String, List<License>>(pomFiles.size());
+
         for (File pomFile : pomFiles) {
             PomHandler pomHandler = new PomHandler(pomFile);
 
-            ModuleVersionIdentifier artifactName = pomHandler.getArtifactName();
-            System.out.println(artifactName);
+            ModuleVersionIdentifier artifactName = pomHandler.getArtifactId();
 
             List<License> licenses = pomHandler.getLicenses();
-
 
             File parentPomFile = pomFile;
             PomHandler parentPomHandler = pomHandler;
             while (licenses.isEmpty()) {
                 // get the parent pom
                 parentPomFile = computeParentPomLocation(parentPomFile, parentPomHandler);
+                if (parentPomFile == null) {
+                    break;
+                }
                 parentPomHandler = new PomHandler(parentPomFile);
                 licenses = parentPomHandler.getLicenses();
             }
 
             if (!licenses.isEmpty()) {
-                for (License license : licenses) {
-                    System.out.println("  > " + license.getName());
-                    if (license.getUrl() != null) {
-                        System.out.println("    " + license.getUrl());
-                    }
-                    if (license.getComments() != null) {
-                        System.out.println("    " + license.getComments());
-                    }
-                }
+                map.put(artifactName.toString(), licenses);
             } else {
                 throw new RuntimeException("unable to find license info for " + artifactName);
             }
         }
+
+        List<String> keys = new ArrayList<String>(map.keySet());
+        Collections.sort(keys);
+
+        File outputFile = getOutputFile();
+        FileWriter writer = new FileWriter(outputFile);
+        try {
+            for (String key : keys) {
+                writer.write(key);
+                writer.write("\n");
+                for (License license : map.get(key)) {
+                    writer.write("  > " + license.getName());
+                    writer.write("\n");
+                    if (license.getUrl() != null) {
+                        writer.write("    " + license.getUrl());
+                        writer.write("\n");
+                    }
+                    if (license.getComments() != null) {
+                        writer.write("    " + license.getComments());
+                        writer.write("\n");
+                    }
+                }
+            }
+        } finally {
+            writer.close();
+        }
     }
 
     private static File computeParentPomLocation(File pomFile, PomHandler pomHandler) throws IOException {
+        // get the parent pom coordinate
+        ModuleVersionIdentifier parentPomCoord = pomHandler.getParentPom();
+        if (parentPomCoord == null) {
+            return null;
+        }
+
         // To find the location of the parentPom, we can rely on the following location pattern for pom files:
         // groupIdSeg1/groupIdSeg2/.../name/version/name-version.pom
         // So first we back track from the current pom to find the root of the repo
@@ -110,14 +146,11 @@ public class ReportTask extends DefaultTask {
         File parentPomFile = pomFile.getParentFile().getParentFile().getParentFile();
 
         // now get the number of groupId segment
-        Iterable<String> segments = Splitter.on('.').split(pomHandler.getArtifactName().getGroup());
+        Iterable<String> segments = Splitter.on('.').split(pomHandler.getArtifactId().getGroup());
         //noinspection unused
         for (String segment : segments) {
             parentPomFile = parentPomFile.getParentFile();
         }
-
-        // now get the parent pom coordinate
-        ModuleVersionIdentifier parentPomCoord = pomHandler.getParentPom();
 
         // add the segments
         segments = Splitter.on('.').split(parentPomCoord.getGroup());

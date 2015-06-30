@@ -114,7 +114,7 @@ public class PomHandler {
         this.pomFile = pomFile;
     }
 
-    public ModuleVersionIdentifier getArtifactName() throws IOException {
+    public ModuleVersionIdentifier getArtifactId() throws IOException {
         Document document = getDocument();
         Node rootNode = document.getDocumentElement();
 
