@@ -132,7 +132,7 @@ task clean << {
     }
   }
 }
-
+apply plugin: 'presubmit-runner'
 // Task for initializing a fresh repo.
 task init {
   dependsOn prepareRepo
