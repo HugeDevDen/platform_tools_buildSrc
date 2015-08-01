@@ -41,6 +41,9 @@ include ':base:google-services'
 
 include ':base:templates'
 
+include ':base:jack:jack-api'
+include ':base:jack:jill-api'
+
 project(':base:api-generator'      ).projectDir = new File(rootDir, 'base/misc/api-generator')
 project(':base:ant-tasks'          ).projectDir = new File(rootDir, 'base/legacy/ant-tasks')
 project(':base:archquery'          ).projectDir = new File(rootDir, 'base/legacy/archquery')
@@ -66,7 +69,6 @@ project(':base:integration-test'   ).projectDir = new File(rootDir, 'base/build-
 project(':base:project-test-lib'   ).projectDir = new File(rootDir, 'base/build-system/project-test-lib')
 project(':base:project-test'       ).projectDir = new File(rootDir, 'base/build-system/project-test')
 project(':base:google-services'    ).projectDir = new File(rootDir, 'base/build-system/google-services')
-
 
 include ':swt:chimpchat'
 include ':swt:ddms'
