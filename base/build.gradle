@@ -12,6 +12,11 @@ task('checkJavaVersion') << {
 final def checkJavaVersionTask = tasks['checkJavaVersion']
 
 allprojects { subproject ->
+    tasks.withType(JavaForkOptions) {
+        // Prevent forked processes from stealing focus (on MacOS at least)
+        jvmArgs '-Djava.awt.headless=true'
+    }
+
     afterEvaluate {
         // Only check if we are doing build type tasks. Things like dependency listing
         // should still work with a "wrong" java version.
