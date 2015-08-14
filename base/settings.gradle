@@ -44,6 +44,8 @@ include ':base:templates'
 include ':base:jack:jack-api'
 include ':base:jack:jill-api'
 
+include ':base:fdr'
+
 project(':base:api-generator'      ).projectDir = new File(rootDir, 'base/misc/api-generator')
 project(':base:ant-tasks'          ).projectDir = new File(rootDir, 'base/legacy/ant-tasks')
 project(':base:archquery'          ).projectDir = new File(rootDir, 'base/legacy/archquery')
