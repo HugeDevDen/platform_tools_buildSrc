@@ -18,6 +18,7 @@ package com.android.tools.internal.emulator
 
 import org.gradle.api.DefaultTask
 import org.gradle.api.logging.LogLevel
+import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputDirectory
 import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.TaskAction
@@ -40,6 +41,9 @@ class BuildEmulator extends DefaultTask {
     }
 
     boolean windows = false
+    @Input
+    String revision
+
 
     @TaskAction
     void build() {
@@ -48,8 +52,8 @@ class BuildEmulator extends DefaultTask {
         String qemu2_command = "$project.projectDir/android/scripts/build-qemu-android.sh --verbose --force --target=arm64,mips64,x86_64 " + (windows? "--host=windows-x86,windows-x86_64" : "")
 
         String command = windows ?
-                "$project.projectDir/android-rebuild.sh --verbose --mingw --out-dir=$output" :
-                "$project.projectDir/android-rebuild.sh --verbose --out-dir=$output"
+                "$project.projectDir/android-rebuild.sh --verbose --mingw --out-dir=$output --sdk-revision=$revision" :
+                "$project.projectDir/android-rebuild.sh --verbose --out-dir=$output --sdk-revision=$revision"
 
         StringBuilder stdout = new StringBuilder()
         StringBuilder stderr = new StringBuilder()
