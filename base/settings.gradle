@@ -25,6 +25,7 @@ include ':base:sdklib'
 include ':base:sdklib-test'
 include ':base:testutils'
 include ':base:gradle-import'
+include ':base:vector-drawable-tool'
 
 include ':base:profile'
 include ':base:builder-model'
