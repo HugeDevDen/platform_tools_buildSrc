@@ -18,6 +18,7 @@ package org.gradle.build.docs.dsl.docbook;
 
 import org.gradle.build.docs.dsl.docbook.model.ClassDoc;
 import org.gradle.build.docs.dsl.docbook.model.PropertyDoc;
+import org.gradle.build.docs.dsl.source.model.TypeMetaData;
 
 public class ReferencedTypeBuilder {
     private final DslDocModel model;
@@ -31,10 +32,22 @@ public class ReferencedTypeBuilder {
      */
     public void build(ClassDoc classDoc) {
         for (PropertyDoc propertyDoc : classDoc.getClassProperties()) {
-            String referencedType = propertyDoc.getMetaData().getType().getName();
-            if (!referencedType.equals(classDoc.getName())) {
-                model.findClassDoc(referencedType);
-            }
+            TypeMetaData returnType = propertyDoc.getMetaData().getType();
+            handleType(classDoc, returnType);
+        }
+    }
+
+    private void handleType(ClassDoc classDoc, TypeMetaData type) {
+        String referencedType = type.getName();
+        if (!referencedType.equals(classDoc.getName())) {
+            model.findClassDoc(referencedType);
+        }
+
+        if (type.getTypeArgs() == null) {
+            return;
+        }
+        for (TypeMetaData typeArg : type.getTypeArgs()) {
+            handleType(classDoc, typeArg);
         }
     }
 }
