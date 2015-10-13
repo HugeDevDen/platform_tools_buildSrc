@@ -51,6 +51,8 @@ class BuildEmulator extends DefaultTask {
         String qemu2_deps_command = "$project.projectDir/android/scripts/build-qemu-android-deps.sh --verbose --force";
         String qemu2_command = "$project.projectDir/android/scripts/build-qemu-android.sh --verbose --force --target=arm64,mips64,x86_64 " + (windows? "--host=windows-x86,windows-x86_64" : "")
 
+        String e2fsprogs_command = "$project.projectDir/android/scripts/build-e2fsprogs.sh";
+
         String command = windows ?
                 "$project.projectDir/android-rebuild.sh --verbose --mingw --out-dir=$output --sdk-revision=$revision" :
                 "$project.projectDir/android-rebuild.sh --verbose --out-dir=$output --sdk-revision=$revision"
@@ -65,6 +67,10 @@ class BuildEmulator extends DefaultTask {
         Process qemu2_p = qemu2_command.execute()
         qemu2_p.consumeProcessOutput(stdout, stderr)
         int qemu2_result = qemu2_p.waitFor()
+
+        Process e2fsprogs_p = e2fsprogs_command.execute();
+        e2fsprogs_p.consumeProcessOutput(stdout, stderr);
+        int e2fsprogs_result = e2fsprogs_p.waitFor();
 
         Process p = command.execute()
         p.consumeProcessOutput(stdout, stderr)
