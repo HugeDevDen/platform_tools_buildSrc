@@ -143,6 +143,7 @@ task init {
   dependsOn prepareRepo
   dependsOn setupGradleInIde
   dependsOn copyGradleProperty
+  dependsOn tasks.findByPath(':base:gradle-experimental:setupGradleInIde')
   dependsOn tasks.findByPath(':base:builder:generateVersionConstantsJava')
 }
 
