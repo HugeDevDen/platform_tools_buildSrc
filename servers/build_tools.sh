@@ -52,7 +52,7 @@ cd "$PROG_DIR"
 GRADLE_FLAGS="--no-daemon --info"
 
 # first build Eclipse/Monitor
-( set -x ; OUT_DIR="$OUT_DIR" DIST_DIR="$DIST_DIR" BUILD_NUMBER="$BNUM" ../../gradlew -b ../../build.gradle $GRADLE_FLAGS  publishLocal ) || exit $?
+( set -x ; OUT_DIR="$OUT_DIR" DIST_DIR="$DIST_DIR" BUILD_NUMBER="$BNUM" ../../gradlew -b ../../build.gradle $GRADLE_FLAGS init publishLocal ) || exit $?
 ( set -x ; OUT_DIR="$OUT_DIR" DIST_DIR="$DIST_DIR" BUILD_NUMBER="$BNUM" ../../gradlew -b ../../../sdk/eclipse/build.gradle $GRADLE_FLAGS copydeps buildEclipse ) || exit $?
 
 # temp disable --parallel builds
