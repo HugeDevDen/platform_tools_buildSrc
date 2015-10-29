@@ -127,3 +127,11 @@ include ':external:fat32lib'
 include ':external:emma'
 project(':external:emma').projectDir = new File(rootDir.getParentFile(), "external/emma")
 
+include ':dataBinding'
+project(':dataBinding').projectDir = new File(rootDir, "data-binding")
+include ':dataBinding:baseLibrary'
+project(':dataBinding:baseLibrary').projectDir = new File(rootDir, "data-binding/baseLibrary")
+include ':dataBinding:compiler'
+project(':dataBinding:compiler').projectDir = new File(rootDir, "data-binding/compiler")
+include ':dataBinding:compilerCommon'
+project(':dataBinding:compilerCommon').projectDir = new File(rootDir, "data-binding/compilerCommon")
