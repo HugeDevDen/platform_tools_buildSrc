@@ -53,6 +53,10 @@ class OfflineRepoPlugin implements Plugin<Project> {
             }
             projectsToConsider.unique().add(topProject)
 
+            // add 'gradle-experimental' to projectsToConsider.  'gradle-experimental' and 'gradle'
+            // have the same dependencies.  Therefore, there is no need find the dependencies again.
+            projectsToConsider.unique().add(project.findProject(':base:gradle-experimental'))
+
             // for each projects, check its output artifact and copy it only with the associated pom file to our
             // local maven repo.
             projectsToConsider.each { someProject ->
