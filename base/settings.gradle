@@ -49,7 +49,11 @@ include ':base:templates'
 include ':base:jack:jack-api'
 include ':base:jack:jill-api'
 
-include ':base:instant-run'
+include ':base:instant-run:instant-run-annotations'
+include ':base:instant-run:instant-run-common'
+include ':base:instant-run:instant-run-client'
+include ':base:instant-run:instant-run-runtime'
+include ':base:instant-run:instant-run-server'
 
 project(':base:api-generator'      ).projectDir = new File(rootDir, 'base/misc/api-generator')
 project(':base:ant-tasks'          ).projectDir = new File(rootDir, 'base/legacy/ant-tasks')
