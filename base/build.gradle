@@ -24,6 +24,7 @@ allprojects { subproject ->
         // Task.doFirst does not run if the task has no work to do. Need to be more aggressive than that.
         // Some projects won't have all of these tasks, so need to use findByName.
         buildTasks.each { subproject.tasks.findByName(it)?.dependsOn(checkJavaVersionTask) }
+        subproject.tasks.findByName('compileJava')?.options?.setIncremental(true)
     }
 }
 
