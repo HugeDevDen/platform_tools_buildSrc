@@ -32,10 +32,8 @@ include ':base:vector-drawable-tool'
 include ':base:profile'
 include ':base:builder-model'
 include ':base:builder-test-api'
-include ':base:transform-api'
 include ':base:builder'
-include ':base:transform-api'
-include ':base:gradle-model'
+include ':base:gradle-api'
 include ':base:gradle-core'
 include ':base:gradle'
 include ':base:gradle-experimental'
@@ -70,12 +68,11 @@ project(':base:sdklib-test'        ).buildFileName = 'test.gradle'
 project(':base:profile'            ).projectDir = new File(rootDir, 'base/build-system/profile')
 project(':base:builder-model'      ).projectDir = new File(rootDir, 'base/build-system/builder-model')
 project(':base:builder-test-api'   ).projectDir = new File(rootDir, 'base/build-system/builder-test-api')
-project(':base:transform-api'      ).projectDir = new File(rootDir, 'base/build-system/transform-api')
 project(':base:builder'            ).projectDir = new File(rootDir, 'base/build-system/builder')
 project(':base:docs'               ).projectDir = new File(rootDir, 'base/build-system/docs')
 project(':base:manifest-merger'    ).projectDir = new File(rootDir, 'base/build-system/manifest-merger')
 project(':base:gradle-core'        ).projectDir = new File(rootDir, 'base/build-system/gradle-core')
-project(':base:transform-api'        ).projectDir = new File(rootDir, 'base/build-system/transform-api')
+project(':base:gradle-api'      ).projectDir = new File(rootDir, 'base/build-system/gradle-api')
 project(':base:gradle'             ).projectDir = new File(rootDir, 'base/build-system/gradle')
 project(':base:gradle-experimental').projectDir = new File(rootDir, 'base/build-system/gradle-experimental')
 project(':base:integration-test'   ).projectDir = new File(rootDir, 'base/build-system/integration-test')
