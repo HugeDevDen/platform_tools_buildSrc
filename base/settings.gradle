@@ -80,6 +80,9 @@ project(':base:project-test-lib'   ).projectDir = new File(rootDir, 'base/build-
 project(':base:project-test'       ).projectDir = new File(rootDir, 'base/build-system/project-test')
 project(':base:google-services'    ).projectDir = new File(rootDir, 'base/build-system/google-services')
 
+include ':base:profiler-plugin'
+project(':base:profiler-plugin').projectDir = new File(rootDir, 'base/profiler/plugin')
+
 include ':sdk:annotations'
 project(':sdk:annotations').projectDir = new File(rootDir.getParentFile(), "sdk/annotations")
 
