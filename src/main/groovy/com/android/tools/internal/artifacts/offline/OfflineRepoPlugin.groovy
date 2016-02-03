@@ -37,6 +37,7 @@ class OfflineRepoPlugin implements Plugin<Project> {
             project.ext.offlineRepo.mkdirs()
         }
 
+        List<String> entryProjectPaths = [':base:gradle', ':base:gradle-experimental', ':dataBinding:compiler']
         /*
          * Identify all project and subprojects output artifacts and copy .jar and .pom
          * files into the repoDir local maven repository
@@ -46,17 +47,11 @@ class OfflineRepoPlugin implements Plugin<Project> {
         copySubProjectsArtifacts.doFirst {
 
             // top project is the root of all the gradle plugin dependencies
-            def topProject = project.findProject(':base:gradle')
-            // select the (unique) subprojects only and the top project
-            def projectsToConsider = topProject.configurations.runtime.incoming.resolutionResult.allDependencies.findResults {
-                (it.selected.id instanceof ProjectComponentIdentifier) ? project.findProject(it.selected.id.projectPath) : null
+            Set<Project> projectsToConsider = new HashSet<Project>()
+            for (String projectPath: entryProjectPaths) {
+                projectsToConsider.addAll(getAllDependencies(project, project.findProject(projectPath)))
+
             }
-            projectsToConsider.unique().add(topProject)
-
-            // add 'gradle-experimental' to projectsToConsider.  'gradle-experimental' and 'gradle'
-            // have the same dependencies.  Therefore, there is no need find the dependencies again.
-            projectsToConsider.unique().add(project.findProject(':base:gradle-experimental'))
-
             // for each projects, check its output artifact and copy it only with the associated pom file to our
             // local maven repo.
             projectsToConsider.each { someProject ->
@@ -88,6 +83,7 @@ class OfflineRepoPlugin implements Plugin<Project> {
          */
         Task copyProjectDependencies = project.tasks.create('copyProjectDependencies', CopyProjectDependencyTask)
         copyProjectDependencies.dependsOn prepareOfflineRepo
+        copyProjectDependencies.entryProjectPaths = entryProjectPaths
 
         Task makeOfflineRepo = project.tasks.create('makeOfflineRepo') {
             outputs.dir project.ext.offlineRepo
@@ -111,5 +107,14 @@ class OfflineRepoPlugin implements Plugin<Project> {
             destinationDir outputFile.parentFile
         }
         zipOfflineRepo.dependsOn makeOfflineRepo
+    }
+
+    private static Collection<Project> getAllDependencies(Project rootProject, Project topProject) {
+        def projects = topProject.configurations.runtime.incoming.resolutionResult.allDependencies.findResults {
+            (it.selected.id instanceof ProjectComponentIdentifier) ? rootProject.findProject(it.selected.id.projectPath) : null
+        }
+
+        projects.unique().add(topProject)
+        return projects;
     }
 }
