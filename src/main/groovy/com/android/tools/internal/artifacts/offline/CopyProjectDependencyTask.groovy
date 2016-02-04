@@ -16,6 +16,8 @@
 package com.android.tools.internal.artifacts.offline
 
 import com.android.tools.internal.artifacts.PomHandler
+import com.google.common.base.Splitter
+import com.google.common.collect.Lists
 import com.google.common.io.Files
 import org.gradle.api.DefaultTask
 import org.gradle.api.artifacts.component.ModuleComponentIdentifier
@@ -25,14 +27,21 @@ import org.gradle.api.tasks.TaskAction
  */
 public class CopyProjectDependencyTask extends DefaultTask {
 
+    public List<String> entryProjectPaths;
+
     @TaskAction
     void copy() {
-        def conf = project.findProject(':base:gradle').configurations.runtime
+        List componentIds = Lists.newArrayList()
 
-        // select transitive dependencies, from this configuration and all referenced subprojects.
-        def componentIds = conf.incoming.resolutionResult.allDependencies.findAll {
-            it.selected.id instanceof ModuleComponentIdentifier
+        for (String entryProjectPath: entryProjectPaths) {
+            def conf = project.findProject(entryProjectPath).configurations.runtime
+
+            // select transitive dependencies, from this configuration and all referenced subprojects.
+            componentIds += conf.incoming.resolutionResult.allDependencies.findAll {
+                it.selected.id instanceof ModuleComponentIdentifier
+            }
         }
+
         // remove duplicates.
         componentIds = componentIds.unique { dep1, dep2 ->
             dep1.selected.id.displayName <=> dep2.selected.id.displayName
@@ -82,8 +91,14 @@ public class CopyProjectDependencyTask extends DefaultTask {
 
         if (copyNotice) {
             srcFile = new File(artifactFolder, 'NOTICE')
+            String artifactPathParts = artifactPath
+            while (!srcFile.isFile() && artifactPathParts.indexOf(File.separator) > 0) {
+                // Walk up the containing directories looking for a shared notice file.
+                artifactPathParts = artifactPathParts.substring(0, artifactPathParts.lastIndexOf(File.separator))
+                srcFile = new File(new File(repoDir, artifactPathParts), 'NOTICE')
+            }
             if (srcFile.isFile()) {
-                Files.copy(srcFile, new File(destinationFolder, srcFile.getName()))
+                Files.copy(srcFile, new File(new File(project.ext.offlineRepo, artifactPathParts), 'NOTICE'))
             } else {
                 throw new RuntimeException("Missing NOTICE file for: " + artifactPath)
             }
