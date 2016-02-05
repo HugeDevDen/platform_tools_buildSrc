@@ -70,12 +70,6 @@ public class CopyProjectDependencyTask extends DefaultTask {
             Files.copy(srcFile, new File(destinationFolder, srcFile.getName()))
         }
 
-        // find the src jar file.
-        srcFile = new File(artifactFolder, "${module}-${version}-sources.jar")
-        if (srcFile.isFile()) {
-            Files.copy(srcFile, new File(destinationFolder, srcFile.getName()))
-        }
-
         // find the pom file.
         srcFile = new File(artifactFolder, "${module}-${version}.pom")
         if (srcFile.isFile()) {

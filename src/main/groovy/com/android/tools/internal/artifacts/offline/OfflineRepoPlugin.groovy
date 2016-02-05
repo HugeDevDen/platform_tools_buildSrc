@@ -69,10 +69,6 @@ class OfflineRepoPlugin implements Plugin<Project> {
                         from new File(sourceDir, file.name.replace(".jar", ".pom"))
                         into outDir
                     }
-                    project.copy {
-                        from new File(sourceDir, file.name.replace(".jar", "-sources.jar"))
-                        into outDir
-                    }
                 }
             }
         }
