@@ -38,6 +38,7 @@ class ToolItem {
     private String name
     private boolean flatten = false
     private boolean executable = false
+    private boolean debug = false
 
     private String sourcePath
 
@@ -55,6 +56,10 @@ class ToolItem {
 
     void notice(Object notice) {
         this.notice = notice
+    }
+
+    void debug(boolean b) {
+        this.debug = b
     }
 
     void executable(boolean b) {
@@ -110,6 +115,10 @@ class ToolItem {
         return destinationPath
     }
 
+    Object getItemPath() {
+        return itemPath
+    }
+
     String getName() {
         return name
     }
@@ -120,6 +129,10 @@ class ToolItem {
 
     boolean getFlatten() {
         return flatten
+    }
+
+    boolean getDebug() {
+        return debug
     }
 
     boolean getExecutable() {
@@ -142,6 +155,7 @@ class ToolItem {
                 ", name='" + name + '\'' +
                 ", flatten=" + flatten +
                 ", executable=" + executable +
+                ", debug=" + debug +
                 '}';
     }
 }

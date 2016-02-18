@@ -33,11 +33,14 @@ class CopyToolItemsTask extends DefaultTask {
 
     File itemOutputDir
 
+    File itemDebugOutputDir
+
     File noticeDir
 
     @TaskAction
     void copy() {
         File outDir = getItemOutputDir()
+        File outDebugDir = getItemDebugOutputDir()
 
         Project p = getProject()
 
@@ -58,10 +61,17 @@ class CopyToolItemsTask extends DefaultTask {
                     }
                 }
 
-                File toFolder = outDir
+                File itemOutDir
+                if (item.getDebug()) {
+                    itemOutDir = outDebugDir
+                } else {
+                    itemOutDir = outDir
+                }
+                File toFolder = itemOutDir
+
                 String destinationPath = item.getDestinationPath()
                 if (destinationPath != null) {
-                    toFolder = new File(outDir, destinationPath)//.replace('/', File.separatorChar))
+                    toFolder = new File(itemOutDir, destinationPath)//.replace('/', File.separatorChar))
                     toFolder.mkdirs()
                 }
 
@@ -72,14 +82,14 @@ class CopyToolItemsTask extends DefaultTask {
                     }
 
                     if (noticeFile != null) {
-                        linkNoticeToFiles(noticeToFilesMap, noticeFile, outDir, Collections.singletonList(toFile))
+                        linkNoticeToFiles(noticeToFilesMap, noticeFile, itemOutDir, Collections.singletonList(toFile))
                     }
 
                 } else if (sourceFile.isDirectory()) {
                     List<File> toFiles = copyFolderItems(sourceFile, toFolder, item.getFlatten())
 
                     if (noticeFile != null) {
-                        linkNoticeToFiles(noticeToFilesMap, noticeFile, outDir, toFiles)
+                        linkNoticeToFiles(noticeToFilesMap, noticeFile, itemOutDir, toFiles)
                     }
                 } else {
                     throw new RuntimeException("Missing sdk-files: ${sourceFile}")

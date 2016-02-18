@@ -58,6 +58,7 @@ public class SdkToolsPlugin extends BaseSdkPlugin implements Plugin<Project> {
         File root = new File(getSdkRoot(), platformName);
 
         File sdkRoot = new File(root, "tools")
+        File sdkDebugRoot = new File(root, "tools.debug")
 
         Task makeTask = project.tasks.create("make${platformName.capitalize()}Sdk")
 
@@ -65,6 +66,8 @@ public class SdkToolsPlugin extends BaseSdkPlugin implements Plugin<Project> {
         cleanFolder.doFirst {
             sdkRoot.deleteDir()
             sdkRoot.mkdirs()
+            sdkDebugRoot.deleteDir()
+            sdkDebugRoot.mkdirs()
         }
 
         final String copyTaskName = "copy${platformName.capitalize()}SdkToolsFiles"
@@ -79,21 +82,30 @@ public class SdkToolsPlugin extends BaseSdkPlugin implements Plugin<Project> {
         zipFiles.from(sdkRoot)
         zipFiles.destinationDir = project.ext.androidHostDist
 
+        Zip zipDebugFiles = project.tasks.create("zip${platformName.capitalize()}DebugSdk", Zip)
+        zipDebugFiles.from(sdkDebugRoot)
+        zipDebugFiles.destinationDir = project.ext.androidHostDist
+
         String buildNumber = System.getenv("BUILD_NUMBER")
         String zipName
+        String zipDebugName
         if (buildNumber == null) {
             zipName = "sdk-repo-$plaformPkgName-tools.zip"
+            zipDebugName = "sdk-repo-$plaformPkgName-debug-tools.zip"
         } else {
             zipName = "sdk-repo-$plaformPkgName-tools-${buildNumber}.zip"
+            zipDebugName = "sdk-repo-$plaformPkgName-debug-tools-${buildNumber}.zip"
         }
 
         zipFiles.setArchiveName(zipName)
         zipFiles.mustRunAfter copyFiles
 
+        zipDebugFiles.setArchiveName(zipDebugName)
+        zipDebugFiles.mustRunAfter cleanFolder
+
         makeTask.description = "Packages the ${platformName.capitalize()} SDK Tools"
         makeTask.group = "Android SDK"
-        makeTask.dependsOn cleanFolder, copyFiles, zipFiles
-
+        makeTask.dependsOn cleanFolder, copyFiles, zipFiles, zipDebugFiles
         project.afterEvaluate {
             List<Task> copyTasks = Lists.newArrayList()
 
