@@ -54,6 +54,8 @@ include ':base:instant-run:instant-run-client'
 include ':base:instant-run:instant-run-runtime'
 include ':base:instant-run:instant-run-server'
 
+include ':base:testing-infrastructure:device-pool:device-provider'
+
 project(':base:api-generator'      ).projectDir = new File(rootDir, 'base/misc/api-generator')
 project(':base:ant-tasks'          ).projectDir = new File(rootDir, 'base/legacy/ant-tasks')
 project(':base:archquery'          ).projectDir = new File(rootDir, 'base/legacy/archquery')
