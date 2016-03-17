@@ -17,16 +17,57 @@
 package com.android.tools.internal.emulator
 
 import org.gradle.api.DefaultTask
+import org.gradle.api.logging.Logger
 import org.gradle.api.logging.LogLevel
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputDirectory
 import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.TaskAction
 import org.gradle.tooling.BuildException
+import java.io.ByteArrayOutputStream
 /**
  * Custom task to build emulator.
  */
 class BuildEmulator extends DefaultTask {
+
+    static class LoggerWriter extends ByteArrayOutputStream {
+        private Logger logger;
+        private LogLevel level;
+
+        public LoggerWriter ( final Logger logger, final LogLevel level ) {
+            super();
+            this.logger = logger;
+            this.level = level;
+        }
+
+        @Override
+        public void write(int b) {
+            if ((char)b == '\n' || (char)b == '\r') {
+                this.flush();
+            } else {
+                super.write(b)
+            }
+        }
+
+        @Override
+        void write(byte[] b, int off, int len) {
+            int lastindex = 0;
+            for (int i = 0; i < len; i ++) {
+                if ((char)b[off+i] == '\n' || (char)b[off+i] == '\r') {
+                    super.write(b, off+lastindex, i-lastindex);
+                    lastindex = i+1;
+                    this.flush();
+                }
+            }
+        }
+
+        @Override
+        public void flush() {
+            this.logger.log(this.level, this.toString());
+            this.reset();
+            super.flush();
+        }
+    }
 
     @OutputDirectory
     File output
@@ -54,39 +95,33 @@ class BuildEmulator extends DefaultTask {
                 "$project.projectDir/android-rebuild.sh --verbose --mingw --out-dir=$output --sdk-revision=$revision --sdk-build-number=$build_number --symbols --crash-prod" :
                 "$project.projectDir/android-rebuild.sh --verbose --out-dir=$output --sdk-revision=$revision --sdk-build-number=$build_number --symbols --crash-prod"
 
-        StringBuilder stdout = new StringBuilder()
-        StringBuilder stderr = new StringBuilder()
+        LoggerWriter stdout = new LoggerWriter(logger, LogLevel.INFO)
+        LoggerWriter stderr = new LoggerWriter(logger, LogLevel.ERROR)
 
         Process p = command.execute()
         p.consumeProcessOutput(stdout, stderr)
 
         int result = p.waitFor()
 
-        logger.log(LogLevel.INFO, stdout.toString())
-        logger.log(LogLevel.ERROR, stderr.toString())
-
         if (result != 0) {
-            throw new BuildException("Failed to run command. See console output", null)
+            throw new BuildException("Failed to run android-rebuild command. See console output", null)
         }
+
+        stdout.reset();
+        stderr.reset();
 
         /**
          * Upload the symbols
          */
         command = "$project.projectDir/android/scripts/upload-symbols.sh --crash-prod --symbol-dir=$output/build/symbols"
 
-        stdout = new StringBuilder()
-        stderr = new StringBuilder()
-
         p = command.execute()
         p.consumeProcessOutput(stdout, stderr)
 
         result = p.waitFor()
 
-        logger.log(LogLevel.INFO, stdout.toString())
-        logger.log(LogLevel.ERROR, stderr.toString())
-
         if (result != 0) {
-            throw new BuildException("Failed to run command. See console output", null)
+            throw new BuildException("Failed to run upload-symbols command. See console output", null)
         }
 
     }
