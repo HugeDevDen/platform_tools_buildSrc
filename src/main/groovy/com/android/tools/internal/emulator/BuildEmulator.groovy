@@ -120,9 +120,15 @@ class BuildEmulator extends DefaultTask {
 
         result = p.waitFor()
 
+        /*
+          upload symbols throws errors intermittently due to use of xargs
+          This shouldn't cause the build to marked as a fail so ignore the result
+          Can always generate and upload symbols from debug archive
+
         if (result != 0) {
             throw new BuildException("Failed to run upload-symbols command. See console output", null)
         }
+        */
 
     }
 }
