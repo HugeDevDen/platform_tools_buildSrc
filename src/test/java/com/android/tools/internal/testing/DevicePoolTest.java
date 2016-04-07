@@ -20,16 +20,17 @@ public class DevicePoolTest {
         List<Thread> getters = Lists.newArrayList();
 
         for (int i = 0; i < 20; i++) {
+            final String testName = "test " + i;
             getters.add(new Thread(new Runnable() {
                 @Override
                 public void run() {
                     try {
-                        devicePool.getAllDevices();
+                        devicePool.getAllDevices("All devices " + testName);
                         try {
                             Thread.sleep(2);
                             Thread.yield();
                         } finally {
-                            devicePool.returnAllDevices();
+                            devicePool.returnAllDevices("All devices" + testName);
                         }
                     } catch (InterruptedException e) {
                         Thread.currentThread().interrupt();
@@ -42,12 +43,12 @@ public class DevicePoolTest {
                 public void run() {
                     try {
                         String device = devicePool
-                                .getDevice(ImmutableList.of("A", "B", "C"));
+                                .getDevice(ImmutableList.of("A", "B", "C"), "Single device " + testName);
                         try {
                             Thread.sleep(2);
                             Thread.yield();
                         } finally {
-                            devicePool.returnDevice(device);
+                            devicePool.returnDevice(device, "Single device " + testName);
                         }
                     } catch (InterruptedException e) {
                         Thread.currentThread().interrupt();
@@ -70,13 +71,13 @@ public class DevicePoolTest {
     }
 
     private static void checkState(DevicePool devicePool) throws InterruptedException {
-        assertEquals("A", devicePool.getDevice(ImmutableList.of("A")));
-        assertEquals("B", devicePool.getDevice(ImmutableList.of("A", "B")));
-        assertEquals("C", devicePool.getDevice(ImmutableList.of("A", "B", "C")));
+        assertEquals("A", devicePool.getDevice(ImmutableList.of("A"), "Checkstate A"));
+        assertEquals("B", devicePool.getDevice(ImmutableList.of("A", "B"), "Checkstate AB"));
+        assertEquals("C", devicePool.getDevice(ImmutableList.of("A", "B", "C"), "Checkstate ABC"));
 
-        devicePool.returnDevice("B");
-        devicePool.returnDevice("A");
-        devicePool.returnDevice("C");
+        devicePool.returnDevice("B", "Checkstate AB");
+        devicePool.returnDevice("A", "Checkstate A");
+        devicePool.returnDevice("C", "Checkstate ABC");
     }
 
 
