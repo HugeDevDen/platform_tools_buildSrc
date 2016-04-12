@@ -59,7 +59,7 @@ public class DevicePool {
     private volatile boolean exclusiveAdbAccess;
 
     public DevicePool() {
-        inUseDevices = new HashSet<String>();
+        inUseDevices = new HashSet<>();
         exclusiveAdbAccess = false;
     }
 
@@ -69,16 +69,17 @@ public class DevicePool {
      * @param serials the list of acceptable device serials
      * @return the allocated serial
      */
-    synchronized String getDevice(List<String> serials) throws InterruptedException {
+    synchronized String getDevice(List<String> serials, String testName) throws InterruptedException {
         String loggedSerialsList = Joiner.on(" or ").join(serials);
-        log("Request: One of: %1$s", loggedSerialsList);
+        log("Request for %1$s: One of: %2$s", testName, loggedSerialsList);
         while (exclusiveAdbAccess || inUseDevices.containsAll(serials)) {
             this.wait();
         }
         for (String serial: serials) {
             if (!inUseDevices.contains(serial)) {
                 inUseDevices.add(serial);
-                log("Device allocated: %1$s for request of %2$s", serial, loggedSerialsList);
+                log("Device allocated: %1$s for request of %2$s by %3$s",
+                        serial, loggedSerialsList, testName);
                 logStatus();
                 return serial;
             }
@@ -92,9 +93,9 @@ public class DevicePool {
      *
      * @param serial the previously allocated serial
      */
-    synchronized void returnDevice(String serial) {
+    synchronized void returnDevice(String serial, String name) {
         inUseDevices.remove(serial);
-        log("Device returned: %1$s", serial);
+        log("Device returned by %1$s: %2$s", serial, name);
         logStatus();
         this.notifyAll();
     }
@@ -103,21 +104,21 @@ public class DevicePool {
     /**
      * Reserves exclusive access to all devices.
      */
-    synchronized void getAllDevices() throws InterruptedException {
-        log("Request: Exclusive adb access");
+    synchronized void getAllDevices(String name) throws InterruptedException {
+        log("Request for %1$s: Exclusive adb access", name);
         while (exclusiveAdbAccess || !inUseDevices.isEmpty()) {
             this.wait();
         }
-        log("Got exclusive adb access");
+        log("Got exclusive adb access for %1$s", name);
         exclusiveAdbAccess = true;
     }
 
     /**
      * Ends the exclusive access to all devices.
      */
-    synchronized void returnAllDevices() {
+    synchronized void returnAllDevices(String name) {
         exclusiveAdbAccess = false;
-        log("Relinquished exclusive adb access");
+        log("Relinquished exclusive adb access by %1$s", name);
         logStatus();
         this.notifyAll();
     }
@@ -129,23 +130,20 @@ public class DevicePool {
     public synchronized void start(final int port) throws IOException {
         log("Starting on port %d", port);
         mServerSocket = new ServerSocket(port);
-        Thread thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while (run.get()) {
-                    Socket s;
-                    try {
-                        s = mServerSocket.accept();
-                    } catch (SocketException ignored) {
-                        return;
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                    DeviceRequestHandler handler = new DeviceRequestHandler(s, DevicePool.this);
-                    handler.start();
+        Thread thread = new Thread(() -> {
+            while (run.get()) {
+                Socket s;
+                try {
+                    s = mServerSocket.accept();
+                } catch (SocketException ignored) {
+                    return;
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
                 }
-                log("Stopped.");
+                DeviceRequestHandler handler = new DeviceRequestHandler(s, DevicePool.this);
+                handler.start();
             }
+            log("Stopped.");
         });
         thread.setDaemon(true);
         thread.start();
@@ -189,38 +187,48 @@ public class DevicePool {
                 return;
             }
             try {
-                String command = in.readLine();
-                if (command.startsWith("request ")) {
-                    String deviceSerials = command.substring("request ".length());
-                    List<String> requestedSerials =
-                            Lists.newArrayList(Splitter.on(' ').split(deviceSerials));
-                    PrintWriter out = new PrintWriter(mSocket.getOutputStream());
-                    try {
-                        String deviceSerial = mDevicePool.getDevice(requestedSerials);
-                        out.println(deviceSerial);
-                        out.flush();
-                    } finally {
-                        out.close();
-                    }
-                } else if (command.startsWith("return ")) {
-                    String deviceSerial = command.substring("return ".length());
-                    mDevicePool.returnDevice(deviceSerial);
-                } else if (command.equals("requestAll")) {
-                    mDevicePool.getAllDevices();
-                } else if (command.equals("returnAll")) {
-                    mDevicePool.returnAllDevices();
-                } else {
-                    System.err.println(String.format("Unknown command %s", command));
+                String commandWithArgs = in.readLine();
+                int firstSpace = commandWithArgs.indexOf(' ');
+                if (firstSpace == -1) {
+                    System.err.println(String.format("Unknown command %s", commandWithArgs));
+                    return;
                 }
-                mSocket.close();
+                String command = commandWithArgs.substring(0, commandWithArgs.indexOf(' '));
+                String deviceSerials = commandWithArgs.substring(commandWithArgs.indexOf(' '),
+                            commandWithArgs.lastIndexOf(' ')).trim();
+                String testName =
+                            commandWithArgs.substring(commandWithArgs.lastIndexOf(' ')).trim();
+                switch (command) {
+                    case "request":
+                        List<String> requestedSerials =
+                                Lists.newArrayList(Splitter.on(',').split(deviceSerials));
+                        try (PrintWriter out = new PrintWriter(mSocket.getOutputStream())) {
+                            String deviceSerial = mDevicePool.getDevice(requestedSerials, testName);
+                            out.println(deviceSerial);
+                            out.flush();
+                        }
+                        break;
+                    case "return":
+                        mDevicePool.returnDevice(deviceSerials, testName);
+                        break;
+                    case "requestAll":
+                        mDevicePool.getAllDevices(testName);
+                        break;
+                    case "returnAll":
+                        mDevicePool.returnAllDevices(testName);
+                        break;
+                    default:
+                        System.err.println(String.format("Unknown command %s", command));
+                        break;
+                }
 
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (InterruptedException e) {
+
+            } catch (IOException | InterruptedException e) {
                 e.printStackTrace();
             } finally {
                 try {
                     in.close();
+                    mSocket.close();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -228,7 +236,7 @@ public class DevicePool {
         }
     }
 
-    public void logStatus() {
+    private void logStatus() {
         log("Devices in use: [%1$s]", Joiner.on(", ").join(inUseDevices));
     }
 
