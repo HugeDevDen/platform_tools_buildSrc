@@ -34,3 +34,14 @@ sourceSets {
         }
     }
 }
+
+// Make sure that we are compiling with 1.8
+task('checkJavaVersion') << {
+    def jvmVersion = System.getProperty('java.version')
+    def requiredVersion = System.getenv('JAVA_FOR_TESTS') ?: '1.8'
+    if (!jvmVersion.startsWith(requiredVersion)) {
+        throw new RuntimeException("Tools need to be compiled with Java $requiredVersion, you are using Java $jvmVersion.")
+    }
+}
+
+assemble.dependsOn checkJavaVersion

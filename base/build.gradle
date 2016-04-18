@@ -1,28 +1,10 @@
 apply plugin: 'clone-artifacts'
 
-// Make sure that we are compiling with 1.8
-task('checkJavaVersion') << {
-    def jvmVersion = System.getProperty('java.version')
-    def requiredVersion = System.getenv('JAVA_FOR_TESTS') ?: '1.8'
-    if (!jvmVersion.startsWith(requiredVersion)) {
-        throw new RuntimeException("Tools need to be compiled with Java $requiredVersion, you are using Java $jvmVersion.")
-    }
-}
-final def checkJavaVersionTask = tasks['checkJavaVersion']
 
 allprojects { subproject ->
     tasks.withType(JavaForkOptions) {
         // Prevent forked processes from stealing focus (on MacOS at least)
         jvmArgs '-Djava.awt.headless=true'
-    }
-
-    afterEvaluate {
-        // Only check if we are doing build type tasks. Things like dependency listing
-        // should still work with a "wrong" java version.
-        final def buildTasks = ['build', 'compileJava', 'compileGroovy', 'classes', 'assemble', 'javadoc', 'groovydoc', 'check']
-        // Task.doFirst does not run if the task has no work to do. Need to be more aggressive than that.
-        // Some projects won't have all of these tasks, so need to use findByName.
-        buildTasks.each { subproject.tasks.findByName(it)?.dependsOn(checkJavaVersionTask) }
     }
 }
 
