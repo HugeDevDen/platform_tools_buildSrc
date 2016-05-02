@@ -19,12 +19,4 @@ if (project.has("release")) {
     }
 }
 
-// turn off strict mode for javadoc generation.
-if (JavaVersion.current().isJava8Compatible()) {
-    allprojects {
-      tasks.withType(Javadoc) {
-        options.addStringOption('Xdoclint:none', '-quiet')
-      }
-    }
-  }
 check.dependsOn javadoc
