@@ -1,6 +1,5 @@
 include ':base:annotations'
 include ':base:api-generator'
-include ':base:ant-tasks'
 include ':base:archquery'
 include ':base:asset-studio'
 include ':base:common'
@@ -56,7 +55,6 @@ include ':base:instant-run:instant-run-server'
 include ':base:testing-infrastructure:device-pool:device-provider'
 
 project(':base:api-generator'      ).projectDir = new File(rootDir, 'base/misc/api-generator')
-project(':base:ant-tasks'          ).projectDir = new File(rootDir, 'base/legacy/ant-tasks')
 project(':base:archquery'          ).projectDir = new File(rootDir, 'base/legacy/archquery')
 project(':base:dvlib'              ).projectDir = new File(rootDir, 'base/device_validator/dvlib')
 project(':base:lint'               ).projectDir = new File(rootDir, 'base/lint/cli')
