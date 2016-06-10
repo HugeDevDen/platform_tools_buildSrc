@@ -35,12 +35,19 @@ sourceSets {
     }
 }
 
-// Make sure that we are compiling with 1.8
+// Make sure that we are compiling with a valid JDK. This can be overridden by setting the
+// 'JAVA_FOR_TESTS' environment variable (to, e.g., '1.6')
 task('checkJavaVersion') << {
-    def jvmVersion = System.getProperty('java.version')
-    def requiredVersion = System.getenv('JAVA_FOR_TESTS') ?: '1.8'
-    if (!jvmVersion.startsWith(requiredVersion)) {
-        throw new RuntimeException("Tools need to be compiled with Java $requiredVersion, you are using Java $jvmVersion.")
+
+    def requiredJdkVersion = JavaVersion.VERSION_1_8
+    def javaForTests = System.getenv('JAVA_FOR_TESTS')
+    if (javaForTests != null) {
+        requiredJdkVersion = JavaVersion.toVersion(javaForTests)
+    }
+
+    def jvmVersion = JavaVersion.current()
+    if (jvmVersion != requiredJdkVersion) {
+        throw new RuntimeException("Tools need to be compiled with Java $requiredJdkVersion, you are using Java $jvmVersion.")
     }
 }
 
