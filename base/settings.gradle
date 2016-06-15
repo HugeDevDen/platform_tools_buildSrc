@@ -102,3 +102,4 @@ project(':dataBinding:compilerCommon').projectDir = new File(rootDir, "data-bind
 include ':analytics-library:protos'
 include ':analytics-library:shared'
 include ':analytics-library:tracker'
+include ':analytics-library:publisher'
