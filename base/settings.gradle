@@ -99,7 +99,8 @@ project(':dataBinding:compiler').projectDir = new File(rootDir, "data-binding/co
 include ':dataBinding:compilerCommon'
 project(':dataBinding:compilerCommon').projectDir = new File(rootDir, "data-binding/compilerCommon")
 
-// disabled for alpha4 as it's not ready for publication.
-//include ':analytics-library:protos'
-//include ':analytics-library:shared'
-//include ':analytics-library:tracker'
+include ':analytics-library:inspector'
+include ':analytics-library:protos'
+include ':analytics-library:shared'
+include ':analytics-library:tracker'
+include ':analytics-library:publisher'
