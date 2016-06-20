@@ -99,6 +99,7 @@ project(':dataBinding:compiler').projectDir = new File(rootDir, "data-binding/co
 include ':dataBinding:compilerCommon'
 project(':dataBinding:compilerCommon').projectDir = new File(rootDir, "data-binding/compilerCommon")
 
+include ':analytics-library:inspector'
 include ':analytics-library:protos'
 include ':analytics-library:shared'
 include ':analytics-library:tracker'
