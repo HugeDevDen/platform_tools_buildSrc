@@ -2,7 +2,7 @@ javadoc {
     exclude               "**/internal/**"
     options.memberLevel = org.gradle.external.javadoc.JavadocMemberLevel.PROTECTED
     options.encoding    = "UTF-8"
-
+    options.addStringOption('Xdoclint:-missing', '-quiet')
     title                 project.ext.pomName
 }
 
