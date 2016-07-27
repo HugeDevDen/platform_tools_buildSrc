@@ -76,7 +76,7 @@ public class SdkToolsPlugin extends BaseSdkPlugin implements Plugin<Project> {
         copyFiles.mustRunAfter cleanFolder
 
         Zip zipFiles = project.tasks.create("zip${platformName.capitalize()}Sdk", Zip)
-        zipFiles.from(sdkRoot)
+        zipFiles.from(root).include("tools/**")
         zipFiles.destinationDir = project.ext.androidHostDist
 
         String buildNumber = System.getenv("BUILD_NUMBER")
