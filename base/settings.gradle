@@ -23,7 +23,6 @@ include ':base:repository'
 include ':base:jaxb-inheritance-plugin'
 include ':base:sdk-common'
 include ':base:sdklib'
-include ':base:sdklib-test'
 include ':base:testutils'
 include ':base:gradle-import'
 include ':base:vector-drawable-tool'
@@ -65,8 +64,6 @@ project(':base:lint-checks'        ).projectDir = new File(rootDir, 'base/lint/l
 project(':base:lint-tests'         ).projectDir = new File(rootDir, 'base/lint/libs/lint-tests')
 project(':base:psi-extractor'      ).projectDir = new File(rootDir, 'base/misc/psi-extractor')
 project(':base:screenshot2'        ).projectDir = new File(rootDir, 'base/misc/screenshot2')
-project(':base:sdklib-test'        ).projectDir = new File(rootDir, 'base/sdklib')
-project(':base:sdklib-test'        ).buildFileName = 'test.gradle'
 
 project(':base:profile'            ).projectDir = new File(rootDir, 'base/build-system/profile')
 project(':base:builder-model'      ).projectDir = new File(rootDir, 'base/build-system/builder-model')
