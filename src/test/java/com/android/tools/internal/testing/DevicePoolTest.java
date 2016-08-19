@@ -11,7 +11,7 @@ import java.util.List;
 
 public class DevicePoolTest {
 
-    @Test(timeout = 500)
+    @Test(timeout = 5000)
     public void checkDevicePoolSanity() throws Exception {
         final DevicePool devicePool = new DevicePool();
 
