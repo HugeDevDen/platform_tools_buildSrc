@@ -56,7 +56,6 @@ public class SdkJavaLibPlugin extends SdkFilesPlugin {
         buildTask.conventionMapping.destinationDir = {
             new File(sdkDir, "jar")
         }
-        buildTask.conventionMapping.archiveName = { project.archivesBaseName + ".jar" }
 
         // delay computing the manifest classpath only if the
         // prebuiltJar task is set to run.
