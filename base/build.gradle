@@ -125,6 +125,6 @@ task init {
   dependsOn setupGradleInIde
   dependsOn copyGradleProperty
   dependsOn tasks.findByPath(':base:gradle-experimental:setupGradleInIde')
-  dependsOn tasks.findByPath(':base:builder:generateVersionConstantsJava')
   dependsOn tasks.findByPath(':base:gradle-core:generateGrammarSource')
+  dependsOn tasks.findByPath(':base:integration-test:generateProto')
 }
