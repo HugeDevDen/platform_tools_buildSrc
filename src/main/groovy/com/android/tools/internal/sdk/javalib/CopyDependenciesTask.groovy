@@ -84,9 +84,18 @@ class CopyDependenciesTask extends BaseTask {
                     Files.copy(artifact.file, dest)
 
                     // copy the license file
-                    File fromFile = new File(repoDir,
-                            id.group.replace('.', '/') +
-                                    '/' + id.name + '/' + id.version + '/NOTICE')
+                    File artifactDir = new File(new File((String)id.group.replace('.', File.separator), id.name), id.version)
+                    File fromFile = new File(new File(repoDir, artifactDir.getPath()), 'NOTICE')
+
+                    while (!fromFile.isFile()) {
+                        // Walk up the containing directories looking for a shared notice file.
+                        artifactDir = artifactDir.getParentFile();
+                        if (artifactDir == null) {
+                            break;
+                        }
+                        fromFile = new File(new File(repoDir, artifactDir.getPath()), 'NOTICE')
+                    }
+
                     if (!fromFile.isFile()) {
                         sb.append("Error: Missing NOTICE file")
                         throw new GradleException(
