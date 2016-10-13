@@ -13,6 +13,7 @@ include ':base:lint'
 include ':base:lint-api'
 include ':base:lint-checks'
 include ':base:lint-tests'
+include ':base:uast'
 include ':base:manifest-merger'
 include ':base:ninepatch'
 include ':base:psi-extractor'
@@ -61,6 +62,7 @@ project(':base:lint'               ).projectDir = new File(rootDir, 'base/lint/c
 project(':base:lint-api'           ).projectDir = new File(rootDir, 'base/lint/libs/lint-api')
 project(':base:lint-checks'        ).projectDir = new File(rootDir, 'base/lint/libs/lint-checks')
 project(':base:lint-tests'         ).projectDir = new File(rootDir, 'base/lint/libs/lint-tests')
+project(':base:uast'               ).projectDir = new File(rootDir, 'base/lint/libs/uast')
 project(':base:psi-extractor'      ).projectDir = new File(rootDir, 'base/misc/psi-extractor')
 project(':base:screenshot2'        ).projectDir = new File(rootDir, 'base/misc/screenshot2')
 
