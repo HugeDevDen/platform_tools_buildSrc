@@ -20,6 +20,7 @@ import com.android.tools.internal.BaseTask
 import com.google.common.base.Charsets
 import com.google.common.base.Joiner
 import com.google.common.collect.Lists
+import com.google.common.io.CharStreams
 import com.google.common.io.Files
 import org.gradle.api.GradleException
 import org.gradle.api.artifacts.Configuration
@@ -29,6 +30,9 @@ import org.gradle.api.tasks.InputDirectory
 import org.gradle.api.tasks.InputFiles
 import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.TaskAction
+
+import java.util.zip.ZipFile
+import java.util.zip.ZipEntry
 
 class CopyDependenciesTask extends BaseTask {
 
@@ -84,29 +88,50 @@ class CopyDependenciesTask extends BaseTask {
                     Files.copy(artifact.file, dest)
 
                     // copy the license file
-                    File artifactDir = new File(new File((String)id.group.replace('.', File.separator), id.name), id.version)
-                    File fromFile = new File(new File(repoDir, artifactDir.getPath()), 'NOTICE')
+                    Reader noticeReader = null;
 
-                    while (!fromFile.isFile()) {
-                        // Walk up the containing directories looking for a shared notice file.
-                        artifactDir = artifactDir.getParentFile();
-                        if (artifactDir == null) {
-                            break;
+                    // first look in the jar itself
+                    try {
+                        ZipFile contents = new ZipFile(artifact.file)
+                        ZipEntry noticeEntry = contents.getEntry('NOTICE')
+                        if (noticeEntry != null) {
+                            System.out.
+                                    println("getting from zip " + artifact.file.getAbsolutePath())
+                            noticeReader =
+                                    new InputStreamReader(contents.getInputStream(noticeEntry))
                         }
-                        fromFile = new File(new File(repoDir, artifactDir.getPath()), 'NOTICE')
-                    }
+                    } catch (Exception ignore) {}
 
-                    if (!fromFile.isFile()) {
+                    // otherwise look in the repo dir
+                    if (noticeReader == null) {
+                        File artifactDir = new File(
+                                new File((String) id.group.replace('.', File.separator), id.name),
+                                id.version)
+                        File fromFile = new File(new File(repoDir, artifactDir.getPath()), 'NOTICE')
+
+                        while (!fromFile.isFile()) {
+                            // Walk up the containing directories looking for a shared notice file.
+                            artifactDir = artifactDir.getParentFile();
+                            if (artifactDir == null) {
+                                break;
+                            }
+                            fromFile = new File(new File(repoDir, artifactDir.getPath()), 'NOTICE')
+                        }
+                        if (fromFile.isFile()) {
+                            noticeReader = new FileReader(fromFile)
+                        }
+                    }
+                    if (noticeReader == null) {
                         sb.append("Error: Missing NOTICE file")
                         throw new GradleException(
-                                "Missing NOTICE file: " + fromFile.absolutePath)
+                                "Missing NOTICE file for " + artifact.file)
                     }
 
                     File toFile = new File(noticeOutDir, "NOTICE_" + artifact.file.name + ".txt")
 
                     sb.append(" (${toFile.absolutePath})")
 
-                    copyNoticeAndAddHeader(fromFile, toFile, "lib/${artifact.file.name}")
+                    copyNoticeAndAddHeader(noticeReader, toFile, "lib/${artifact.file.name}")
 
                 }
             } finally {
@@ -117,8 +142,8 @@ class CopyDependenciesTask extends BaseTask {
         }
     }
 
-    private static void copyNoticeAndAddHeader(File from, File to, String name) {
-        List<String> lines = Files.readLines(from, Charsets.UTF_8)
+    private static void copyNoticeAndAddHeader(Reader from, File to, String name) {
+        List<String> lines = CharStreams.readLines(from)
         List<String> noticeLines = Lists.newArrayListWithCapacity(lines.size() + 4)
         noticeLines.addAll([
                 "============================================================",
