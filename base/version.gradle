@@ -1,9 +1,11 @@
 Properties properties = new Properties()
-File versionProperties = new File(rootDir, "buildSrc/base/version.properties")
+File versionRootDir = rootDir
+File versionProperties = new File(versionRootDir, "buildSrc/base/version.properties")
 
-if (!versionProperties.exists()) {
-    // Special case for data-bindings.
-    versionProperties = new File(rootDir, "../buildSrc/base/version.properties")
+while (!versionProperties.exists() && versionRootDir.parentFile != null &&
+        versionRootDir.parentFile.exists()) {
+    versionRootDir = versionRootDir.parentFile
+    versionProperties = new File(versionRootDir, "buildSrc/base/version.properties")
 }
 
 versionProperties.withReader { properties.load(it) }
