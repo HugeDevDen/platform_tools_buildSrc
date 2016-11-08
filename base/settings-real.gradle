@@ -36,6 +36,7 @@ include ':base:builder'
 include ':base:transform-api'
 include ':base:gradle-api'
 include ':base:gradle-core'
+include ':base:instant-run-instrumentation'
 include ':base:gradle'
 include ':base:gradle-experimental'
 include ':base:integration-test'
@@ -74,6 +75,7 @@ project(':base:builder'            ).projectDir = new File(rootDir, 'base/build-
 project(':base:docs'               ).projectDir = new File(rootDir, 'base/build-system/docs')
 project(':base:manifest-merger'    ).projectDir = new File(rootDir, 'base/build-system/manifest-merger')
 project(':base:gradle-core'        ).projectDir = new File(rootDir, 'base/build-system/gradle-core')
+project(':base:instant-run-instrumentation'        ).projectDir = new File(rootDir, 'base/build-system/instant-run-instrumentation')
 project(':base:transform-api'      ).projectDir = new File(rootDir, 'base/build-system/transform-api')
 project(':base:gradle-api'      ).projectDir = new File(rootDir, 'base/build-system/gradle-api')
 project(':base:gradle'             ).projectDir = new File(rootDir, 'base/build-system/gradle')
