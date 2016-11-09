@@ -1,3 +1,4 @@
+// Versions that we are building.
 Properties properties = new Properties()
 File versionRootDir = rootDir
 File versionProperties = new File(versionRootDir, "buildSrc/base/version.properties")
@@ -13,3 +14,14 @@ versionProperties.withReader { properties.load(it) }
 for (name in properties.stringPropertyNames()) {
     project.ext[name] = properties.getProperty(name)
 }
+
+// Add ext.libs for library versions
+Properties dependencies = new Properties()
+File dependenciesProperties = new File(versionRootDir, "buildSrc/base/dependencies.properties")
+dependenciesProperties.withReader { dependencies.load(it) }
+
+def libs = [:].withDefault { key -> throw new IllegalArgumentException('"' + key + '" not a valid dependency.') }
+for (name in dependencies.stringPropertyNames()) {
+    libs[name] = dependencies.getProperty(name)
+}
+rootProject.ext['libs'] = libs
