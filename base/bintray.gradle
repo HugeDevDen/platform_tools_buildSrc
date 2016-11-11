@@ -57,7 +57,7 @@ bintray {
 
     publications = [ 'mavenJava' ]
 
-    publish = project.has("release")
+    publish = project.hasProperty("release")
     pkg {
         userOrg = 'android'
         repo = 'android-tools'
