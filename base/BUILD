@@ -8,3 +8,9 @@ maven_pom(
   version = "25.3.0-dev",
   visibility = ["//visibility:public"],
 )
+
+maven_pom(
+  name = "build_version",
+  version = "2.3.0-dev",
+  visibility = ["//visibility:public"],
+)
