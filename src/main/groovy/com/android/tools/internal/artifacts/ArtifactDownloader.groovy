@@ -204,14 +204,19 @@ class ArtifactDownloader {
 
         // download the pom
         File pomFile
-        if (result == null) {
+        if (result == null || result.repoUrl == null) {
             result = tryToDownloadFile(repoUrls, folder, baseName + DOT_POM,
                     rootDestination, true, false, true)
 
-            pomFile = result.file
+            if (result != null) {
+                pomFile = result.file
+            }
         } else {
-            pomFile = downloadFile(result.repoUrl ,folder, baseName + DOT_POM, rootDestination,
+            result = downloadFile(result.repoUrl ,folder, baseName + DOT_POM, rootDestination,
                     false, true)
+            if (result != null) {
+                pomFile = result.file
+            }
         }
 
         if (pomFile == null) {
@@ -226,7 +231,11 @@ class ArtifactDownloader {
         }
 
         // download the jar artifact
-        downloadFile(result.repoUrl, folder, baseName + "." + packaging, rootDestination, false, false)
+        if (result.repoUrl != null) {
+            downloadFile(result.repoUrl, folder, baseName + "." + packaging, rootDestination, false, false)
+        } else {
+            result = tryToDownloadFile(repoUrls, folder, baseName + "." + packaging, rootDestination, false, false, true)
+        }
 
         // download the source if available
         try {
@@ -248,8 +257,10 @@ class ArtifactDownloader {
             throws IOException {
         for (String repoUrl : repoUrls) {
             try {
-                File f = downloadFile(repoUrl, folder, name, rootDestination, force, printDownload)
-                return DownloadResult.with(repoUrl, f)
+                DownloadResult result = downloadFile(repoUrl, folder, name, rootDestination, force, printDownload)
+                if (result != null) {
+                    return result
+                }
             } catch (IOException ignored) {
                 // ignore
             }
@@ -257,13 +268,14 @@ class ArtifactDownloader {
 
         // if we get here, the file was not found in any repo.
         if (breakOnMissing) {
-            throw new IOException(String.format("Failed to find %s/%s in any repo", folder, name))
+            //throw new IOException(String.format("Failed to find %s/%s in any repo", folder, name))
+            System.out.println(String.format("FAILURE to find %s/%s in any repo", folder, name))
         }
 
         return null
     }
 
-    private File downloadFile(String repoUrl, String folder, String name, File rootDestination,
+    private DownloadResult downloadFile(String repoUrl, String folder, String name, File rootDestination,
                               boolean force, boolean printDownload) throws IOException {
         File destinationFolder = new File(rootDestination, folder)
         destinationFolder.mkdirs()
@@ -272,11 +284,14 @@ class ArtifactDownloader {
         File destinationFile = new File(destinationFolder, name)
 
         if (force || !destinationFile.isFile()) {
-            if (printDownload) {
-                System.out.println("DWNLOAD " + destinationFile.absolutePath)
-            }
             try {
+                if (printDownload) {
+                    System.out.println("DWNLOAD " + destinationFile.absolutePath)
+                }
                 FileUtils.copyURLToFile(fileURL, destinationFile)
+                if (printDownload) {
+                    System.out.println("SUCCESS " + destinationFile.absolutePath)
+                }
             } catch (FileNotFoundException e) {
                 System.out.println("WARNING, " + fileURL + " not downloaded")
                 return null
@@ -295,6 +310,7 @@ class ArtifactDownloader {
                 FileUtils.copyURLToFile(sha15URL, sha1File)
 
                 checksum(destinationFile, sha1File, Hashing.sha1())
+                return DownloadResult.with(repoUrl, destinationFile)
             } catch (FileNotFoundException e) {
                 // ignore md5 or sha1 missing files.
             }
@@ -302,7 +318,7 @@ class ArtifactDownloader {
             System.out.println("SKIPPED " + destinationFile.absolutePath)
         }
 
-        return destinationFile
+        return DownloadResult.with(null, destinationFile)
     }
 
     /**
