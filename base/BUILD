@@ -14,3 +14,9 @@ maven_pom(
   version = "2.3.0-dev",
   visibility = ["//visibility:public"],
 )
+
+maven_pom(
+  name = "experimental_version",
+  version = "0.9.0-dev",
+  visibility = ["//visibility:public"],
+)
