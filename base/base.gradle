@@ -25,7 +25,7 @@ tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
 }
 
-task disableTestFailures << {
+task disableTestFailures {
     tasks.withType(Test) {
         ignoreFailures = true
     }

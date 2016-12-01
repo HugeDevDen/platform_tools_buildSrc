@@ -41,7 +41,7 @@ sourceSets {
 
 // Make sure that we are compiling with a valid JDK. This can be overridden by setting the
 // 'JAVA_FOR_TESTS' environment variable (to, e.g., '1.6')
-task('checkJavaVersion') << {
+task('checkJavaVersion').doLast {
 
     def requiredJdkVersion = JavaVersion.VERSION_1_8
     def javaForTests = System.getenv('JAVA_FOR_TESTS')
