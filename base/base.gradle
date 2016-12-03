@@ -26,7 +26,9 @@ tasks.withType(JavaCompile) {
 }
 
 task disableTestFailures {
-    tasks.withType(Test) {
-        ignoreFailures = true
+    doLast {
+        tasks.withType(Test) {
+            ignoreFailures = true
+        }
     }
 }
