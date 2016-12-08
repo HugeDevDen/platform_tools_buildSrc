@@ -92,7 +92,7 @@ subprojects { project ->
     }
 }
 
-task setupGradleInIde << {
+task('setupGradleInIde').doLast {
     File dir = gradle.gradleHomeDir
     File gradleDistLink = new File(project.ext.androidHostOut, "gradle-dist-link")
     if (gradleDistLink.exists()) {
@@ -104,12 +104,11 @@ task setupGradleInIde << {
 }
 
 // basic task for custom distribution of project should the build server.
-task dist << {
-}
+task('dist').doLast {}
 
 apply plugin: 'offline-repo'
 
-task clean << {
+task('clean').doLast {
   delete 'build'
 
   new File("$localRepo/com/android/tools").eachFile {
