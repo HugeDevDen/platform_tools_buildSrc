@@ -80,9 +80,14 @@ task prepareRepo(type: Copy) {
     into { "$rootProject.ext.androidHostOut/repo" }
 }
 
-task copyGradleProperty(type: Copy) {
-    from { "${System.env.HOME}/.gradle/gradle.properties" }
-    into { gradle.gradleUserHomeDir }
+task("copyGradleProperty").doLast {
+    def gradleProperties = file("${System.env.HOME}/.gradle/gradle.properties")
+    if (gradleProperties.exists()) {
+        project.copy {
+            from { gradleProperties }
+            into { gradle.gradleUserHomeDir }
+        }
+    }
 }
 
 tasks.create(name: 'publishLocal')
