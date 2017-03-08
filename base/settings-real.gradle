@@ -111,6 +111,7 @@ include ':sdk:find-java'
 project(':sdk:find-java').projectDir = new File(rootDir.getParentFile(), "sdk/find_java")
 
 include ':external:fat32lib'
+include ':external:desugar'
 
 include ':dataBinding'
 project(':dataBinding').projectDir = new File(rootDir, "data-binding")
