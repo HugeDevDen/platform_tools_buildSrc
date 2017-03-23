@@ -135,4 +135,4 @@ include ':apksig'
 project(':apksig').buildFileName = 'android_plugin_for_gradle.gradle'
 
 include ':dx'
-project(':dx').projectDir = new File(rootDir, 'dx/dalvik/dx')
+project(':dx').projectDir = new File(rootDir, '../dalvik/dx')
