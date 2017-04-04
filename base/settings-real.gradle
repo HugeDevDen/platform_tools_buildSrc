@@ -19,7 +19,6 @@ include ':base:lint-tests'
 include ':base:uast'
 include ':base:manifest-merger'
 include ':base:ninepatch'
-include ':base:psi-extractor'
 include ':base:screenshot2'
 include ':base:repository'
 include ':base:jaxb-inheritance-plugin'
@@ -67,7 +66,6 @@ project(':base:lint-api'           ).projectDir = new File(rootDir, 'base/lint/l
 project(':base:lint-checks'        ).projectDir = new File(rootDir, 'base/lint/libs/lint-checks')
 project(':base:lint-tests'         ).projectDir = new File(rootDir, 'base/lint/libs/lint-tests')
 project(':base:uast'               ).projectDir = new File(rootDir, 'base/lint/libs/uast')
-project(':base:psi-extractor'      ).projectDir = new File(rootDir, 'base/misc/psi-extractor')
 project(':base:screenshot2'        ).projectDir = new File(rootDir, 'base/misc/screenshot2')
 
 project(':base:profile'            ).projectDir = new File(rootDir, 'base/build-system/profile')
