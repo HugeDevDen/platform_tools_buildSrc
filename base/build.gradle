@@ -97,17 +97,6 @@ subprojects { project ->
     }
 }
 
-task('setupGradleInIde').doLast {
-    File dir = gradle.gradleHomeDir
-    File gradleDistLink = new File(project.ext.androidHostOut, "gradle-dist-link")
-    if (gradleDistLink.exists()) {
-        gradleDistLink.delete()
-    }
-    String link = dir.path.substring(project.ext.androidHostOut.path.length() + 1)
-    String command = "ln -s $link ${gradleDistLink.path}"
-    command.execute()
-}
-
 // basic task for custom distribution of project should the build server.
 task('dist').doLast {}
 
@@ -126,7 +115,6 @@ apply plugin: 'presubmit-runner'
 // Task for initializing a fresh repo.
 task init {
   dependsOn prepareRepo
-  dependsOn setupGradleInIde
   dependsOn copyGradleProperty
   dependsOn tasks.findByPath(':base:gradle-experimental:setupGradleInIde')
   dependsOn tasks.findByPath(':base:gradle-core:generateGrammarSource')
