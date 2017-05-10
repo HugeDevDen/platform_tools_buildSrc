@@ -94,6 +94,7 @@ tasks.create(name: 'publishLocal')
 subprojects { project ->
     if (project.tasks.findByName('publishLocal') != null) {
         rootProject.publishLocal.dependsOn project.publishLocal
+        project.tasks.publishLocal.enabled=project.plugins.findPlugin('signing') != null
     }
 }
 
