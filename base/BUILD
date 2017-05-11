@@ -5,18 +5,18 @@ exports_files(["version.properties"])
 # TODO: Extend POM generation to support what's needed for publishing.
 maven_pom(
     name = "base_version",
-    version = "25.4.0-dev",
+    version = "26.0.0-dev",
     visibility = ["//visibility:public"],
 )
 
 maven_pom(
     name = "build_version",
-    version = "2.4.0-dev",
+    version = "3.0.0-dev",
     visibility = ["//visibility:public"],
 )
 
 maven_pom(
     name = "experimental_version",
-    version = "0.10.0-dev",
+    version = "0.11.0-dev",
     visibility = ["//visibility:public"],
 )
