@@ -24,6 +24,8 @@ if (System.env.USE_EXTERNAL_REPO != null) {
   }
 }
 
+ext.kotlin_version = '1.0.5'
+
 /*
  * With the build server you are given two env variables.
  * The OUT_DIR is a temporary directory you can use to put things during the build.
