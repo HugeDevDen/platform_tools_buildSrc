@@ -1,5 +1,3 @@
-apply plugin: 'signing'
-
 jar {
     from 'NOTICE'
 }
@@ -72,11 +70,6 @@ task sourcesJar(type: Jar, dependsOn:classes) {
 artifacts {
     archives jar
     archives sourcesJar
-}
-
-signing {
-    required { project.hasProperty("release") && gradle.taskGraph.hasTask("uploadArchives") }
-    sign configurations.archives
 }
 
 task uploadlLocal(type: Upload) {

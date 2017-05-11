@@ -96,7 +96,11 @@ tasks.create(name: 'publishLocal')
 subprojects { project ->
     if (project.tasks.findByName('publishLocal') != null) {
         rootProject.publishLocal.dependsOn project.publishLocal
-        project.tasks.publishLocal.enabled=project.plugins.findPlugin('signing') != null
+        // if we are in release mode, only publish modules that have the
+        // signing plugin applied (found in bintray.gradle)
+        if (project.hasProperty("release")) {
+          project.tasks.publishLocal.enabled=project.plugins.findPlugin('signing') != null
+        }
     }
 }
 

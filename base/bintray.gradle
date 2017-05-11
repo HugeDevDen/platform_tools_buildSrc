@@ -14,6 +14,12 @@ buildscript {
 // through a "apply from:".
 apply plugin: com.jfrog.bintray.gradle.BintrayPlugin
 apply plugin: 'maven-publish'
+apply plugin: 'signing'
+
+signing {
+    required { project.hasProperty("release") && gradle.taskGraph.hasTask("uploadArchives") }
+    sign configurations.archives
+}
 
 publishing {
     publications {
