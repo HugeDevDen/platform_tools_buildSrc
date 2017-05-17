@@ -79,7 +79,7 @@ public class SdkEmulatorPlugin extends BaseSdkPlugin implements Plugin<Project> 
         copyFiles.mustRunAfter cleanFolder
 
         Zip zipFiles = project.tasks.create("zip${platformName.capitalize()}Sdk", Zip)
-        zipFiles.from(root).include("emulator/**")
+        zipFiles.from(root).include("emulator/**").exclude("**/*upstream*")
         zipFiles.destinationDir = project.ext.androidHostDist
 
         Zip zipDebugFiles = project.tasks.create("zip${platformName.capitalize()}DebugSdk", Zip)
