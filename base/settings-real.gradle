@@ -17,7 +17,6 @@ include ':base:lint-api'
 include ':base:lint-checks'
 include ':base:lint-tests'
 include ':base:uast'
-include ':base:intellij-core'
 include ':base:manifest-merger'
 include ':base:ninepatch'
 include ':base:screenshot2'
@@ -63,7 +62,6 @@ project(':base:lint-api'           ).projectDir = new File(rootDir, 'base/lint/l
 project(':base:lint-checks'        ).projectDir = new File(rootDir, 'base/lint/libs/lint-checks')
 project(':base:lint-tests'         ).projectDir = new File(rootDir, 'base/lint/libs/lint-tests')
 project(':base:uast'               ).projectDir = new File(rootDir, 'base/lint/libs/uast')
-project(':base:intellij-core'      ).projectDir = new File(rootDir, 'base/lint/libs/intellij-core')
 project(':base:screenshot2'        ).projectDir = new File(rootDir, 'base/misc/screenshot2')
 
 project(':base:profile'            ).projectDir = new File(rootDir, 'base/build-system/profile')
