@@ -15,7 +15,18 @@ test {
 
 apply from: "$rootDir/buildSrc/base/base.gradle"
 
-task publishLocal(type: Upload) {
+// Custom Upload task with an @OutputDirectory to allow up-to-date check.
+class LocalUpload extends Upload {
+    @OutputDirectory
+    File getArtifact() {
+        String artifactLocation = "${project.rootProject.ext.localRepo}/" +
+                "${project.group.replace('.', File.separator)}/${project.archivesBaseName}/" +
+                "${project.version}"
+        return new File(artifactLocation)
+    }
+}
+
+task publishLocal(type: LocalUpload) {
     configuration = configurations.archives
     repositories {
         mavenDeployer {
