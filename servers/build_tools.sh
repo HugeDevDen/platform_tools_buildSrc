@@ -42,16 +42,16 @@ then
     popd
 fi
 
-TARGET="init assemble"
-#if [[ $CURRENT_OS == "linux" ]]; then
-#    TARGET="$TARGET makeWinSdk"
-#fi
+TARGET="makeSdk"
+if [[ $CURRENT_OS == "linux" ]]; then
+    TARGET="$TARGET makeWinSdk"
+fi
 
 cd "$PROG_DIR"
 
 GRADLE_FLAGS="--no-daemon --info"
 
-#( set -x ; OUT_DIR="$OUT_DIR" DIST_DIR="$DIST_DIR" BUILD_NUMBER="$BNUM" ../../gradlew -p ../.. $GRADLE_FLAGS :sdk:eclipse:copydeps buildEclipse ) || exit $?
+( set -x ; OUT_DIR="$OUT_DIR" DIST_DIR="$DIST_DIR" BUILD_NUMBER="$BNUM" ../../gradlew -p ../.. $GRADLE_FLAGS :sdk:eclipse:copydeps buildEclipse ) || exit $?
 
 # temp disable --parallel builds
 #OUT_DIR="$OUT_DIR" DIST_DIR="$DIST_DIR" ../../gradlew -b ../../build.gradle --parallel-threads="${NUM_THREADS:-47}" $GRADLE_FLAGS makeSdk
