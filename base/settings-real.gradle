@@ -110,6 +110,9 @@ project(':sdk:find-java').projectDir = new File(rootDir.getParentFile(), "sdk/fi
 include ':external:fat32lib'
 include ':external:desugar'
 
+include ':external:r8'
+project(':external:r8').buildFileName = 'tools_build.gradle'
+
 include ':dataBinding'
 project(':dataBinding').projectDir = new File(rootDir, "data-binding")
 include ':dataBinding:baseLibrary'
