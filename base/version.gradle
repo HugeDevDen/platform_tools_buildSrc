@@ -1,12 +1,13 @@
 // Versions that we are building.
 Properties properties = new Properties()
 File versionRootDir = rootDir
-File versionProperties = new File(versionRootDir,
-  project.hasProperty("release")
-    ? "buildSrc/base/version.properties"
-    : "buildSrc/base/dev-version.properties")
+File versionProperties = new File(versionRootDir, "buildSrc/base/version.properties")
 
-project.ext['versionProperties'] = versionProperties
+while (!versionProperties.exists() && versionRootDir.parentFile != null &&
+        versionRootDir.parentFile.exists()) {
+    versionRootDir = versionRootDir.parentFile
+    versionProperties = new File(versionRootDir, "buildSrc/base/version.properties")
+}
 
 versionProperties.withReader { properties.load(it) }
 
