@@ -85,6 +85,10 @@ task aggregateResults(type: Copy) {
     into { file("$buildDir/results") }
 }
 
+testTasks.each { task ->
+    aggregateResults.mustRunAfter task
+}
+
 task prepareRepo(type: Copy) {
     from { rootProject.cloneArtifacts.repository }
     into { "$rootProject.ext.androidHostOut/repo" }
